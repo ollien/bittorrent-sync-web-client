@@ -19,8 +19,10 @@ class SecretRequest(object):
 	def POST(self,**kwargs):
 		if 'secret' in kwargs:
 			self.secret = kwargs['secret']
+			self.syncSecret()
 			return json.loads({'Success':''})
 		else:
 			return json.loads({'Error':'No Key Provided'}) 
-
+	def syncSecret(self):
+		cherrpy.session['secret']=self.secret
 	

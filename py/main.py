@@ -5,6 +5,8 @@ import jinja2
 import requests
 import json
 from mimetypes import guess_type as getType
+from urlparse import urlparse
+
 staticRoot = os.path.dirname(os.path.abspath(os.getcwd()))
 staticPath = os.path.join(os.path.dirname(os.path.abspath(os.getcwd())),'static/')
 templates = jinja2.Environment(loader=jinja2.FileSystemLoader(staticPath+'html'))
@@ -33,15 +35,20 @@ class Main(object):
 		r = requests.get(syncAddr,params=kwargs)
 		return r.text
 	@cherrypy.expose
-	def getFile(self,path):
+	def getFile(self,*args):
 		try:
-			f = file(path)
+			path = '/'.join(args)
+			#A fix to start at the root of the drive.
+			if path[0]!='/':
+				path = '/'+path
+			print path
+			f = file(path)			
 			cherrypy.response.headers['Content-Type'] = getType(path)[0]
 			return f
 		except IOError:
 			print "hm"
-			return json.loads({'Error':"File doesn't exist."})
-			
+			return json.dumps({'Error':"File doesn't exist."})
+	
 if __name__=='__main__':
 	config = {
 		'/':{

@@ -23,7 +23,7 @@ function setupButtons(){
 		}
 		else{
 			console.log(path)
-			window.location.href = '/getFile?path='+path
+			window.location.href = '/getFile'+path
 			console.log(window.location.href)
 		}
 		

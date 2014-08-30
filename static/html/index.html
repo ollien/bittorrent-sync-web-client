@@ -11,6 +11,7 @@
 	woop
 	<div id="folders">
 		<ul class="media-list" id="folderList">
+			{{folders}}
 			{% for item in folders %}
 				{% if 'dir' in item %}
 					<li class='media folderItem' name="{{item['dir']}}" type="folder" secret="{{item['secret']}}" items="{{item['secret']}}">

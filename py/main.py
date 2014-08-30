@@ -5,7 +5,6 @@ import jinja2
 import requests
 import json
 from mimetypes import guess_type as getType
-from urlparse import urlparse
 
 staticRoot = os.path.dirname(os.path.abspath(os.getcwd()))
 staticPath = os.path.join(os.path.dirname(os.path.abspath(os.getcwd())),'static/')
@@ -42,13 +41,23 @@ class Main(object):
 			if path[0]!='/':
 				path = '/'+path
 			print path
-			f = file(path)			
-			cherrypy.response.headers['Content-Type'] = getType(path)[0]
-			return f
+			if self.pathInSync(path):
+				f = file(path)			
+				cherrypy.response.headers['Content-Type'] = getType(path)[0]
+				return f
+			else:
+				print 'nope'
+				raise cherrypy.HTTPError(403)
 		except IOError:
 			print "hm"
 			return json.dumps({'Error':"File doesn't exist."})
-	
+	def pathInSync(self,path):
+		result = json.loads(self.btSync(method='get_folders'))
+		folders = [item['dir'] for item in result]
+		for item in folders:
+			if item in path:
+				return True
+		return False
 if __name__=='__main__':
 	config = {
 		'/':{

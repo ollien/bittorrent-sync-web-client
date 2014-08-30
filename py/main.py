@@ -1,5 +1,4 @@
 import cherrypy
-import auth
 import os, os.path
 import jinja2
 import requests
@@ -12,9 +11,6 @@ templates = jinja2.Environment(loader=jinja2.FileSystemLoader(staticPath+'html')
 syncIp = "127.0.0.1:8888"
 syncAddr = "http://"+syncIp+"/api"
 class Main(object):
-	# secret = SecretRequest
-	def __init__(self):
-		self.secret = auth.SecretRequest()
 	@cherrypy.expose
 	def index(self):
 		indexTemplate = templates.get_template('index.html')

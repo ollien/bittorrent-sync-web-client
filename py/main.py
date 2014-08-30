@@ -4,7 +4,7 @@ import os, os.path
 import jinja2
 import requests
 import json
-
+from mimetypes import guess_type as getType
 staticRoot = os.path.dirname(os.path.abspath(os.getcwd()))
 staticPath = os.path.join(os.path.dirname(os.path.abspath(os.getcwd())),'static/')
 templates = jinja2.Environment(loader=jinja2.FileSystemLoader(staticPath+'html'))
@@ -32,6 +32,16 @@ class Main(object):
 	def btSync(self,**kwargs):
 		r = requests.get(syncAddr,params=kwargs)
 		return r.text
+	@cherrypy.expose
+	def getFile(self,path):
+		try:
+			f = file(path)
+			cherrypy.response.headers['Content-Type'] = getType(path)[0]
+			return f
+		except IOError:
+			print "hm"
+			return json.loads({'Error':"File doesn't exist."})
+			
 if __name__=='__main__':
 	config = {
 		'/':{

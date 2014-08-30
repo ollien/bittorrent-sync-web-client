@@ -1,5 +1,6 @@
 var parentFolder	;
 var readWrite = false;
+var path = "";
 function setupButtons(){
 	$('.folderItem').click(function(event){
 		var t = $(this);
@@ -15,8 +16,15 @@ function setupButtons(){
 		else{
 			parentFolder = secret;
 		}
+		path+=name
 		if (type=='folder'){
 			loadFolder(name,secret);
+			path+="/"
+		}
+		else{
+			console.log(path)
+			window.location.href = '/getFile?path='+path
+			console.log(window.location.href)
 		}
 		
 		// else if (type=="read/write"){

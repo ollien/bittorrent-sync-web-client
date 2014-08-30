@@ -2,10 +2,14 @@ import cherrypy
 import auth
 import os, os.path
 import jinja2
+import requests
+import json
+
 staticRoot = os.path.dirname(os.path.abspath(os.getcwd()))
 staticPath = os.path.join(os.path.dirname(os.path.abspath(os.getcwd())),'static/')
 templates = jinja2.Environment(loader=jinja2.FileSystemLoader(staticPath+'html'))
-
+syncIp = "127.0.0.1:8888"
+syncAddr = "http://"+syncIp+"/api"
 class Main(object):
 	# secret = SecretRequest
 	def __init__(self):
@@ -13,7 +17,21 @@ class Main(object):
 	@cherrypy.expose
 	def index(self):
 		indexTemplate = templates.get_template('index.html')
-		return indexTemplate.render()
+		folders = self.btSync(method='get_folders')
+		return indexTemplate.render(folders=json.loads(folders))
+	@cherrypy.expose
+	def folder(self,secret,path=""):
+		indexTemplate = templates.get_template('index.html')
+		files = self.btSync(method='get_files',secret=secret,path=path)
+		return indexTemplate.render(folders=json.loads(files))
+	@cherrypy.expose
+	def hello(self):
+		return "hello world"
+	@cherrypy.expose(['sync'])
+	#BitTorrentSync API, pass in variables for the methods, eg method=get_folders and secret=secret
+	def btSync(self,**kwargs):
+		r = requests.get(syncAddr,params=kwargs)
+		return r.text
 if __name__=='__main__':
 	config = {
 		'/':{

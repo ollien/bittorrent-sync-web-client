@@ -12,17 +12,17 @@ class SecretRequest(object):
 	exposed = True
 	@cherrypy.tools.accept(media='text/plain')
 	def GET(self):
-		if secret!=None:
+		if self.secret!=None:
 			return str(self.secret)
 		else:
-			return json.loads({'Error':'No Secret set.'})
+			return json.dumps({'Error':'No Secret set.'})
 	def POST(self,**kwargs):
 		if 'secret' in kwargs:
 			self.secret = kwargs['secret']
 			self.syncSecret()
-			return json.loads({'Success':''})
+			return json.dumps({'Success':''})
 		else:
-			return json.loads({'Error':'No Key Provided'}) 
+			return json.dumps({'Error':'No Key Provided'}) 
 	def syncSecret(self):
-		cherrpy.session['secret']=self.secret
+		cherrypy.session['secret']=self.secret
 	

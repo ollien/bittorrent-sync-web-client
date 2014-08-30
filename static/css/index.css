@@ -1,0 +1,22 @@
+img.folderIcon{
+	max-width:64px;
+	max-width:64px;	
+}
+
+li.folderPath{
+	/* vertical-align: middle; */ */
+	
+}
+
+div.folderBlock{
+	position: relative;
+}
+h4.folderPath{
+	display: block;
+	position: absolute;
+	top: 50%;
+	left: 0%;
+	margin-top:-10px;
+	margin-left:70px;
+	
+}

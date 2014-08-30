@@ -1,10 +1,43 @@
 <html>
 <head>
 	<title>Title!</title>
-	<script src = "static/js/jquery.js"></script>
+	<script src="static/js/jquery.js"></script>
+	<script src="static/js/filelist.js"></script>
+	<link href="static/bootstrap/css/bootstrap.css" rel="stylesheet" type='text/css'>
+	<link href="static/css/index.css" rel="stylesheet" type='text/css'>
 </head>
 <body>
-	You got it!
+	Something
+	<div id="folders">
+		<ul class="media-list" id="folderList">
+			{% for item in folders %}
+				{% if dir in item %}
+					<li class='media folderItem' folder="{{item['dir']}}">
+				{% else %}
+					<li class='media folderItem' folder="{{item['name']}}">
+				{% endif %}
+					<div class='folderBlock'>
+						{% if 'dir' in item %}
+							<img class='folderIcon' src='static/img/folder.png'>
+							<h4 class="folderPath">{{item['dir']}}</h4>
+						{% else %}
+							{% if item['type'] == 'folder' %}
+								<img class='folderIcon' src='static/img/folder.png'>
+							{% else %}
+								 <img class='folderIcon' src='static/img/file.png'>
+							{% endif %}
+							<h4 class="folderPath">{{item['name']}}</h4>
+						{% endif %}
+						
+					</div>
+				</li>
+				{% else %}
+				<span id="noFolders">There are no folders.</span>
+			{% endfor %}
+		</ul>
+	</div>
+	something else
+	
 </body>
 </html>
 	

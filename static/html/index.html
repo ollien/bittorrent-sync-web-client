@@ -12,10 +12,11 @@
 	<div id="folders">
 		<ul class="media-list" id="folderList">
 			{% for item in folders %}
-				{% if dir in item %}
-					<li class='media folderItem' name="{{item['dir']}}">
+				{% if 'dir' in item %}
+					<li class='media folderItem' name="{{item['dir']}}" type="folder" secret="{{item['secret']}}" items="{{item['secret']}}">
 				{% else %}
-					<li class='media folderItem' name="{{item['name']}}">
+					<li class='media folderItem' name="{{item['name']}}" type="{{item['type']}}" secret="null" state="{{item['state']}}"> 
+					
 				{% endif %}
 					<div class='folderBlock'>
 						{% if 'dir' in item %}
@@ -33,7 +34,7 @@
 					</div>
 				</li>
 				{% else %}
-				<span id="noFolders">There are no folders.</span>
+				<span id="noFolders"> no folders.</span>
 			{% endfor %}
 		</ul>
 	</div>

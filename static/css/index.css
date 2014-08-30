@@ -2,14 +2,19 @@ img.folderIcon{
 	max-width:32px;
 	max-width:32px;	
 }
+ul#folderList{
+	
+}
 div#folders{
-	border-left: 1px #000 solid;
-	border-top: 1px #000 solid;
-	border-right: 1px #000 solid;
+	margin-left: 5%;
+	margin-right: 5%;
+	border-top: 1px #AAAAAA solid;
+	border-left: 1px #AAAAAA solid;
+	border-right: 1px #AAAAAA solid;
 }
 li.folderItem{
 	margin-top:0px;
-	border-bottom: 1px #000 solid;
+	border-bottom: 1px #AAAAAA solid;
 }
 li.folderItem:hover{
   transition: all .08s ease-in;

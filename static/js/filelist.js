@@ -1,11 +1,6 @@
 $(document).ready(function(){
-	$.ajax({
-		'url':'/sync',
-		// 'data':{'method':'get_folders'},
-		'data':{'method':'get_files','secret':'AGSCU2RBBXQRDC6PGMLYMZH6AHVRDMMID'},
-		'success':function(data){
-			console.log(data)
-			console.log('done')
-		}
-		});
+	$('#loading').show();
+	$('#folderList').load('http://localhost:8080/folder #folderList',{'secret':'AGSCU2RBBXQRDC6PGMLYMZH6AHVRDMMID'},function(){
+		$('#loading').hide();
+	})
 });

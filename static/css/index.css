@@ -1,11 +1,19 @@
 img.folderIcon{
-	max-width:64px;
-	max-width:64px;	
+	max-width:32px;
+	max-width:32px;	
 }
-
-li.folderPath{
-	/* vertical-align: middle; */ */
-	
+div#folders{
+	border-left: 1px #000 solid;
+	border-top: 1px #000 solid;
+	border-right: 1px #000 solid;
+}
+li.folderItem{
+	margin-top:0px;
+	border-bottom: 1px #000 solid;
+}
+li.folderItem:hover{
+  transition: all .08s ease-in;
+	background:#dddddd;
 }
 
 div.folderBlock{
@@ -17,6 +25,6 @@ h4.folderPath{
 	top: 50%;
 	left: 0%;
 	margin-top:-10px;
-	margin-left:70px;
+	margin-left:35px;
 	
 }

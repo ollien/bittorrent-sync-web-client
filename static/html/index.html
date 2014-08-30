@@ -8,13 +8,14 @@
 </head>
 <body>
 	<span id='loading' style="display:none">Loading...</span>
+	woop
 	<div id="folders">
 		<ul class="media-list" id="folderList">
 			{% for item in folders %}
 				{% if dir in item %}
-					<li class='media folderItem' folder="{{item['dir']}}">
+					<li class='media folderItem' name="{{item['dir']}}">
 				{% else %}
-					<li class='media folderItem' folder="{{item['name']}}">
+					<li class='media folderItem' name="{{item['name']}}">
 				{% endif %}
 					<div class='folderBlock'>
 						{% if 'dir' in item %}

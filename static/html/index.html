@@ -7,14 +7,13 @@
 	<link href="static/css/index.css" rel="stylesheet" type='text/css'>
 </head>
 <body>
+	
 	<span id='loading' style="display:none">Loading...</span>
-	woop
 	<div id="folders">
 		<ul class="media-list" id="folderList">
-			{{folders}}
 			{% for item in folders %}
 				{% if 'dir' in item %}
-					<li class='media folderItem' name="{{item['dir']}}" type="folder" secret="{{item['secret']}}" items="{{item['secret']}}">
+					<li class='media folderItem' name="{{item['dir']}}" type="folder" secret="{{item['secret']}}" items="{{item['secret']}}"> 
 				{% else %}
 					<li class='media folderItem' name="{{item['name']}}" type="{{item['type']}}" secret="null" state="{{item['state']}}"> 
 					
@@ -22,14 +21,15 @@
 					<div class='folderBlock'>
 						{% if 'dir' in item %}
 							<img class='folderIcon' src='static/img/folder.png'>
-							<h4 class="folderPath">{{item['dir']}}</h4>
+							<span class="folderPath">{{item['dir']}}</span>
+							Secret:<input class="folderSecret" value="{{item['secret']}}" readonly="readonly" type="password"></input>
 						{% else %}
 							{% if item['type'] == 'folder' %}
 								<img class='folderIcon' src='static/img/folder.png'>
 							{% else %}
 								 <img class='folderIcon' src='static/img/file.png'>
 							{% endif %}
-							<h4 class="folderPath">{{item['name']}}</h4>
+							<span class="folderPath">{{item['name']}}</span>
 						{% endif %}
 						
 					</div>

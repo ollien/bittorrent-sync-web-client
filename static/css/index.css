@@ -24,12 +24,14 @@ li.folderItem:hover{
 div.folderBlock{
 	position: relative;
 }
-h4.folderPath{
-	display: block;
-	position: absolute;
-	top: 50%;
-	left: 0%;
-	margin-top:-10px;
-	margin-left:35px;
-	
+.folderBlock > span{
+	 margin-top: 8px;
+	 float:left;
+	 font-weight: 500;
+}
+.folderPath{
+	margin-right: 20px;
+}
+.folderBlock > img{
+	 float:left;
 }

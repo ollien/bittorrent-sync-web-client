@@ -31,6 +31,13 @@ function setupButtons(){
 		// 	readWrite=true;
 		// }
 	});
+	$('.folderSecret').click(function(event){
+		event.stopPropagation();
+		$(this).attr("type","text");
+	});
+	$('.folderSecret').blur(function(event){
+		$(this).attr("type","password");
+	});
 }
 function loadFolder(name,secret){
 	$('#loading').show();
@@ -41,7 +48,7 @@ function loadFolder(name,secret){
 		args['path']=name;
 	}
 	console.log(args);
-	$('#folderList').load('http://localhost:8080/folder #folderList',args,function(){
+	$('#folderList').load('/folder #folderList',args,function(){
 		$('#loading').hide();
 		setupButtons();
 		hideDeleted();
@@ -52,7 +59,6 @@ function hideDeleted(){
 	for (var i=0; i<items.length; i++){
 		if ($(items[i]).attr('state')=="deleted")
 			$(items[i]).hide();
-			// console.log(items[i]);
 	}
 }
 $(document).ready(function(){

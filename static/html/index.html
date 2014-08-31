@@ -1,13 +1,13 @@
 <html>
 <head>
 	<title>Title!</title>
-	<script src="static/js/jquery.js"></script>
-	<script src="static/js/filelist.js"></script>
-	<link href="static/bootstrap/css/bootstrap.css" rel="stylesheet" type='text/css'>
-	<link href="static/css/index.css" rel="stylesheet" type='text/css'>
+	<script src="/static/js/jquery.js"></script>
+	<script src="/static/js/filelist.js"></script>
+	<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" type='text/css'>
+	<link href="/static/css/index.css" rel="stylesheet" type='text/css'>
 </head>
 <body>
-	
+	<button id='#addSecret' class='btn btn-primary'>Add Secret</button>
 	<span id='loading' style="display:none">Loading...</span>
 	<div id="folders">
 		<ul class="media-list" id="folderList">
@@ -20,14 +20,14 @@
 				{% endif %}
 					<div class='folderBlock'>
 						{% if 'dir' in item %}
-							<img class='folderIcon' src='static/img/folder.png'>
+							<img class='folderIcon' src='/static/img/folder.png'>
 							<span class="folderPath">{{item['dir']}}</span>
 							Secret:<input class="folderSecret" value="{{item['secret']}}" readonly="readonly" type="password"></input>
 						{% else %}
 							{% if item['type'] == 'folder' %}
-								<img class='folderIcon' src='static/img/folder.png'>
+								<img class='folderIcon' src='/static/img/folder.png'>
 							{% else %}
-								 <img class='folderIcon' src='static/img/file.png'>
+								 <img class='folderIcon' src='/static/img/file.png'>
 							{% endif %}
 							<span class="folderPath">{{item['name']}}</span>
 						{% endif %}

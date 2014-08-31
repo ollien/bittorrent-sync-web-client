@@ -1,6 +1,5 @@
 var parentFolder	;
 var readWrite = false;
-var path = "";
 function setupButtons(){
 	$('.folderItem').click(function(event){
 		var t = $(this);
@@ -16,14 +15,32 @@ function setupButtons(){
 		else{
 			parentFolder = secret;
 		}
-		path+=name
 		if (type=='folder'){
-			loadFolder(name,secret);
-			path+="/"
+			// loadFolder(name,secret);
+			if (name[0]=='/'){
+				name=name.substring(1,name.length);
+			}
+			if (window.location.href[window.location.href.length-1]=='/'){
+				if (window.location.href.indexOf('/folder/')==-1){
+					window.location.href+='folder/'+name
+				}
+				else{
+					window.location.href+=name;
+				}
+			}
+				
+			else
+				window.location.href+='/'+name;
 		}
 		else{
-			console.log(path)
-			window.location.href = '/getFile'+path
+			var path = window.location.href.split('/');
+			var temp = []
+			for (var i=path.indexOf("folder")+1; i<path.length; i++){
+				temp.push(path[i]);	
+			}
+			temp.push(name);
+			path=temp.join('/')
+			window.location.href = '/getFile/'+path
 			console.log(window.location.href)
 		}
 		
@@ -39,21 +56,6 @@ function setupButtons(){
 		$(this).attr("type","password");
 	});
 }
-function loadFolder(name,secret){
-	$('#loading').show();
-	args = {'secret':secret}
-	console.log(name)
-	console.log(name.indexOf('/')!=-1);
-	if (name!=undefined && name!=null && name.indexOf('/')==-1){ //name.indexOf('/')==-1 is a hotfix for a problem where the files would not be avaliable if it was the root folder.
-		args['path']=name;
-	}
-	console.log(args);
-	$('#folderList').load('/folder #folderList',args,function(){
-		$('#loading').hide();
-		setupButtons();
-		hideDeleted();
-	});
-}
 function hideDeleted(){
 	var items = $('.folderItem');
 	for (var i=0; i<items.length; i++){
@@ -63,4 +65,5 @@ function hideDeleted(){
 }
 $(document).ready(function(){
 	setupButtons();
+	hideDeleted();
 });

@@ -17,8 +17,26 @@ class Main(object):
 		folders = self.btSync(method='get_folders')
 		return indexTemplate.render(folders=json.loads(folders))
 	@cherrypy.expose
-	def folder(self,secret,path=""):
+	def folder(self,*args):
 		indexTemplate = templates.get_template('index.html')
+		files = None
+		path = '/'.join(args)
+		print path
+		if path[0]!='/':
+			path = '/'+path
+			print path
+		secrets = json.loads(self.btSync(method='get_folders'))
+		secret = None
+		for item in secrets:
+			print '---'
+			print item['dir']
+			print path
+			print item['dir'] in path
+			if item['dir'] in path:
+				secret = item['secret']
+				path=path.replace(item['dir'],"")
+		print secret
+		print path
 		files = self.btSync(method='get_files',secret=secret,path=path)
 		return indexTemplate.render(folders=json.loads(files))
 	@cherrypy.expose

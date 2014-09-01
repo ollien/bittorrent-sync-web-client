@@ -47,14 +47,14 @@ class Main(object):
 		elif create.lower() == 'true':
 			create = True
 		if os.path.exists(path) and os.path.isdir(path):
-			print 'exists'
 			return 'true'
 		elif create and not os.path.exists(path):
-			print 'creating'
-			os.makedirs(path)
-			return 'true'
+			if os.access(path,os.R_OK) and os.access(path,os.W_OK):
+				os.makedirs(path)
+				return 'true'
+			else:
+				return 'notAllowed'
 		else:
-			print 'nope'
 			return 'false'
 	@cherrypy.expose
 	def hello(self):

@@ -63,7 +63,7 @@ function setupButtons(){
 	$('#confirmAddSecret').click(function(event){
 		var secret = $('#secretInput').val();
 		var dir = $('#dirInput').val();
-		if (dir.length!=0){
+		if (dir.length!=0 && dir!='/'){
 			
 			var result; 
 			// alert(dir);
@@ -72,10 +72,13 @@ function setupButtons(){
 				if (data=='true'){
 					result=true;
 				}
+				else if (data=='notAllowed'){
+					result = -1;
+				}
 				else{
 					result=false;
 				}
-				if (result && secret.length>0){
+				if (result===true && secret.length>0){
 					$.post('/sync',{'method':'add_folder','dir':dir,'secret':secret},function(data){
 						data = JSON.parse(data);
 						if (data['error']!=0){
@@ -93,7 +96,7 @@ function setupButtons(){
 						}
 					});
 				}
-				else if (result && secret.length==0){
+				else if (result===true && secret.length==0){
 					$.post('/sync',{'method':'add_folder','dir':dir},function(data){
 						data = JSON.parse(data);
 						if (data['error']!=0){
@@ -111,15 +114,22 @@ function setupButtons(){
 						}
 					});
 				}
-				else if (!result){
+				else if (result===false){
 					$('#dirInput').attr('data-content',"This directory does not exist. You can create it manually or check the box below.");
 					$('#dirInput').popover('show');
 				}
-				
+				else{
+					$('#dirInput').attr('data-content',"You do not have write permission to this directory.");
+					$('#dirInput').popover('show');
+				}
 				
 			});
 			
 			
+		}
+		else if (dir=='/'){
+			$('#dirInput').attr('data-content',"You cannot choose / as your directory.");
+			$('#dirInput').popover('show');
 		}
 	});
 	$('#addSecretModal').keypress(function(event){

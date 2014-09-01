@@ -57,7 +57,9 @@ function setupButtons(){
 	});
 	$('#addSecret').click(function(event){
 		$('#addSecretModal').modal('show');
-	})
+	});
+	$('#secretInput').popover({'trigger':'manual'});
+	$('#dirInput').popover({'trigger':'manual'});
 	$('#confirmAddSecret').click(function(event){
 		var secret = $('#secretInput').val();
 		var dir = $('#dirInput').val();
@@ -66,7 +68,6 @@ function setupButtons(){
 			var result; 
 			// alert(dir);
 			var checked = $('#createFolder').prop('checked');
-			alert(checked);
 			$.get('/dirExists',{'path':dir,'create':checked},function(data){
 				if (data=='true'){
 					result=true;
@@ -125,6 +126,10 @@ function setupButtons(){
 		if (event.which==13){
 			$('#confirmAddSecret').click();
 		}
+	});
+	$('#addSecretModal').on('hide.bs.modal',function(event){
+		$('#secretInput').popover('hide');
+		$('#dirInput').popover('hide');
 	});
 	$('#dirInput').on('input',function(event){
 		$('#dirInput').popover('hide');

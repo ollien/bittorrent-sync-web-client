@@ -2,12 +2,13 @@
 <head>
 	<title>Title!</title>
 	<script src="/static/js/jquery.js"></script>
+	<script src='/static/bootstrap/js/bootstrap.min.js'></script>
 	<script src="/static/js/filelist.js"></script>
 	<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" type='text/css'>
 	<link href="/static/css/index.css" rel="stylesheet" type='text/css'>
 </head>
 <body>
-	<button id='#addSecret' class='btn btn-primary'>Add Secret</button>
+	<button id='addSecret' class='btn btn-primary'>Add Secret</button>
 	<span id='loading' style="display:none">Loading...</span>
 	<div id="folders">
 		<ul class="media-list" id="folderList">
@@ -40,6 +41,28 @@
 		</ul>
 	</div>
 	something else
+	<div class="modal fade bs-example-modal-sm" id="addSecretModal" tabindex="-1" role="dialog" aria-labelledby="addSecretModal" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title">Add a secret</h4>
+				</div>
+				<div id="addSecretModalBody" class="modal-body">
+					<input id="dirInput" type="text" class="form-control" placeholder="Directory" data-toggle="popover" data-placement="right" data-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget tincidunt metus, at tincidunt odio. Aliquam sed elit ut orci iaculis commodo. In pellentesque suscipit dignissim." />
+					<br / >
+					<input id="secretInput" type="text" class="form-control" placeholder="Secret (optional)" data-toggle="popover" data-placement="right" data-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget tincidunt metus, at tincidunt odio. Aliquam sed elit ut orci iaculis commodo. In pellentesque suscipit dignissim."/>
+					<br />
+					<input type="checkbox" id="createFolder">Create the directory if it does not exist.</input>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button id="confirmAddSecret" class="btn btn-primary">Add</button>
+				</div>
+			</div>
+		</div>
+	</div>
+				
 	
 </body>
 </html>

@@ -55,6 +55,83 @@ function setupButtons(){
 	$('.folderSecret').blur(function(event){
 		$(this).attr("type","password");
 	});
+	$('#addSecret').click(function(event){
+		$('#addSecretModal').modal('show');
+	})
+	$('#confirmAddSecret').click(function(event){
+		var secret = $('#secretInput').val();
+		var dir = $('#dirInput').val();
+		if (dir.length!=0){
+			
+			var result; 
+			// alert(dir);
+			var checked = $('#createFolder').prop('checked');
+			alert(checked);
+			$.get('/dirExists',{'path':dir,'create':checked},function(data){
+				if (data=='true'){
+					result=true;
+				}
+				else{
+					result=false;
+				}
+				if (result && secret.length>0){
+					$.post('/sync',{'method':'add_folder','dir':dir,'secret':secret},function(data){
+						data = JSON.parse(data);
+						if (data['error']!=0){
+							var error=data['message'];
+							$('#secretInput').attr('data-content',error);
+							$('#secretInput').popover('show');
+						}
+						else{
+							$('#dirInput').val('');
+							$('#secretInput').val('');
+							$('#secretInput').popover('hide');
+							$('#dirInput').popover('hide');
+							$('#addSecretModal').modal('hide');
+							updateFolders();
+						}
+					});
+				}
+				else if (result && secret.length==0){
+					$.post('/sync',{'method':'add_folder','dir':dir},function(data){
+						data = JSON.parse(data);
+						if (data['error']!=0){
+							var error=data['message'];
+							$('#dirInput').attr('data-content',error);
+							$('#dirInput').popover('show');
+						}
+						else{
+							$('#dirInput').val('');
+							$('#secretInput').val('');
+							$('#secretInput').popover('hide');
+							$('#dirInput').popover('hide');
+							$('#addSecretModal').modal('hide');
+							updateFolders();
+						}
+					});
+				}
+				else if (!result){
+					$('#dirInput').attr('data-content',"This directory does not exist. You can create it manually or check the box below.");
+					$('#dirInput').popover('show');
+				}
+				
+				
+			});
+			
+			
+		}
+	});
+	$('#addSecretModal').keypress(function(event){
+		if (event.which==13){
+			$('#confirmAddSecret').click();
+		}
+	});
+	$('#dirInput').on('input',function(event){
+		$('#dirInput').popover('hide');
+	});
+	$('#secretInput').on('input',function(event){
+		$('#dirInput').popover('hide');
+	});
 }
 function hideDeleted(){
 	var items = $('.folderItem');
@@ -63,7 +140,22 @@ function hideDeleted(){
 			$(items[i]).hide();
 	}
 }
+function secretInPage(){
+	var items = $('.folderItem');
+	for (var i=0; i<items.length; i++){
+		if ($(items[i]).attr('secret')!="null"){
+			return true;
+		}
+	}
+	return false;
+}
+function updateFolders(){
+	$('#folderList' ).load('/ #folderList');
+}
 $(document).ready(function(){
+	if (!secretInPage()){
+		$('#addSecret').css('visibility','hidden');
+	}
 	setupButtons();
 	hideDeleted();
 });

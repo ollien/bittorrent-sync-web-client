@@ -19,26 +19,43 @@ class Main(object):
 	@cherrypy.expose
 	def folder(self,*args):
 		indexTemplate = templates.get_template('index.html')
-		files = None
-		path = '/'.join(args)
-		print path
-		if path[0]!='/':
-			path = '/'+path
+		if len(args)==0:
+			path=''
+		else:
+			files = None
+			path = '/'.join(args)
 			print path
-		secrets = json.loads(self.btSync(method='get_folders'))
-		secret = None
-		for item in secrets:
-			print '---'
-			print item['dir']
-			print path
-			print item['dir'] in path
-			if item['dir'] in path:
-				secret = item['secret']
-				path=path.replace(item['dir'],"")
-		print secret
-		print path
+			if path[0]!='/':
+				path = '/'+path
+				print path
+			secrets = json.loads(self.btSync(method='get_folders'))
+			secret = None
+			for item in secrets:
+				print '---'
+				print item['dir']
+				print path
+				print item['dir'] in path
+				if item['dir'] in path:
+					secret = item['secret']
+					path=path.replace(item['dir'],"")
 		files = self.btSync(method='get_files',secret=secret,path=path)
 		return indexTemplate.render(folders=json.loads(files))
+	@cherrypy.expose
+	def dirExists(self,path,create=False):
+		if create.lower() == 'false':
+			create = False
+		elif create.lower() == 'true':
+			create = True
+		if os.path.exists(path) and os.path.isdir(path):
+			print 'exists'
+			return 'true'
+		elif create and not os.path.exists(path):
+			print 'creating'
+			os.makedirs(path)
+			return 'true'
+		else:
+			print 'nope'
+			return 'false'
 	@cherrypy.expose
 	def hello(self):
 		return "hello world"

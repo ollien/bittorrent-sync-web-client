@@ -35,3 +35,7 @@ div.folderBlock{
 .folderBlock > img{
 	 float:left;
 }
+#addSecretModalBody > .popover{
+	width:300px;
+	max-width:300px;
+}

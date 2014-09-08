@@ -33,15 +33,7 @@ function setupButtons(){
 				window.location.href+='/'+name;
 		}
 		else{
-			var path = window.location.href.split('/');
-			var temp = []
-			for (var i=path.indexOf("folder")+1; i<path.length; i++){
-				temp.push(path[i]);	
-			}
-			temp.push(name);
-			path=temp.join('/')
-			window.location.href = '/getFile/'+path
-			console.log(window.location.href)
+			window.location.href = '/getFile'+createPath()+'/'+name
 		}
 		
 		// else if (type=="read/write"){
@@ -78,6 +70,7 @@ function setupButtons(){
 				else{
 					result=false;
 				}
+				console.log(result);
 				if (result===true && secret.length>0){
 					$.post('/sync',{'method':'add_folder','dir':dir,'secret':secret},function(data){
 						data = JSON.parse(data);
@@ -147,6 +140,33 @@ function setupButtons(){
 	$('#secretInput').on('input',function(event){
 		$('#dirInput').popover('hide');
 	});
+	$('#upload').change(function(event){
+		var fileList = $('#upload')[0].files
+		if (fileList.length==1){
+			//JSON likes to not handle files correctly, so we use FormData
+			data = new FormData()
+			data.append('f',fileList[0]);
+			data.append('path',createPath()+'/'+fileList[0].name);
+			// var data = {'f':$('#upload')[0].files, 'path':'null for now'}
+			console.log('uploading');
+			$.ajax({
+				url:'/upload',
+				type:'POST',
+				data:data,
+				processData:false,
+				contentType:false,
+				success:function(data){
+					console.log(data);
+					updateFolders();
+				}
+			});
+		}
+	});
+}
+function createPath(){
+	if (window.location.pathname.indexOf('/folder/') > -1)
+		return window.location.pathname.split('/folder/').join('/');
+	return window.location.pathname
 }
 function hideDeleted(){
 	var items = $('.folderItem');
@@ -164,12 +184,26 @@ function secretInPage(){
 	}
 	return false;
 }
+function isRoot(){
+	if (window.location.pathname=='/'){
+		return true;
+	}
+	return false;
+}
 function updateFolders(){
-	$('#folderList' ).load('/ #folderList');
+	$('#folderList' ).load(window.location.pathname+' #folderList',function(){
+		console.log('hiding deleted');
+		setupButtons();
+		hideDeleted();	
+	});
+	
 }
 $(document).ready(function(){
-	if (!secretInPage()){
-		$('#addSecret').css('visibility','hidden');
+	if (!isRoot()){
+		$('#addSecret').hide();
+	}
+	else{
+		$('#upload').hide();
 	}
 	setupButtons();
 	hideDeleted();

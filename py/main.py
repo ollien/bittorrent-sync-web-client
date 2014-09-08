@@ -3,6 +3,9 @@ import os, os.path
 import jinja2
 import requests
 import json
+import cgi
+import tempfile
+from shutil import move
 from mimetypes import guess_type as getType
 
 staticRoot = os.path.dirname(os.path.abspath(os.getcwd()))
@@ -10,6 +13,13 @@ staticPath = os.path.join(os.path.dirname(os.path.abspath(os.getcwd())),'static/
 templates = jinja2.Environment(loader=jinja2.FileSystemLoader(staticPath+'html'))
 syncIp = "127.0.0.1:8888"
 syncAddr = "http://"+syncIp+"/api"
+class FileFieldStorage(cgi.FieldStorage):
+	def make_file(self,binary=None):
+		return tempfile.NamedTemporaryFile()
+def noBodyProcess():
+	cherrypy.request.process_request_body = False
+
+cherrypy.tools.noBodyProcess = cherrypy.Tool('before_request_body', noBodyProcess)
 class Main(object):
 	@cherrypy.expose
 	def index(self):
@@ -42,14 +52,17 @@ class Main(object):
 		return indexTemplate.render(folders=json.loads(files))
 	@cherrypy.expose
 	def dirExists(self,path,create=False):
-		if create.lower() == 'false':
-			create = False
-		elif create.lower() == 'true':
-			create = True
+		if type(create)!=bool:
+			if create.lower() == 'false':
+				create = False
+			elif create.lower() == 'true':
+				create = True
 		if os.path.exists(path) and os.path.isdir(path):
 			return 'true'
 		elif create and not os.path.exists(path):
-			if os.access(path,os.R_OK) and os.access(path,os.W_OK):
+			check = os.path.abspath(os.path.join(path, os.pardir))
+			print check
+			if (os.access(path,os.R_OK) and os.access(path,os.W_OK)) or (os.access(check,os.R_OK) and os.access(check,os.W_OK)):
 				os.makedirs(path)
 				return 'true'
 			else:
@@ -85,10 +98,45 @@ class Main(object):
 	def pathInSync(self,path):
 		result = json.loads(self.btSync(method='get_folders'))
 		folders = [item['dir'] for item in result]
+		print path
 		for item in folders:
+			print item
 			if item in path:
 				return True
 		return False
+	def pathExists(self,path,removeFileName=True):
+		if removeFileName:
+			q = path.split('/')
+			del q[len(q)-1]	
+			path = '/'.join(q[:len(q)-2])
+		if self.dirExists(path) or (os.path.exists() and os.path.isfile(path)):
+			return True
+		return False
+	@cherrypy.expose
+	@cherrypy.tools.noBodyProcess()
+	def upload(self,f=None,path=None):
+		print 'it\'s a file jim!'
+		# f.seek(0,0)
+		h = {}
+		for key in cherrypy.request.headers:
+			h[key.lower()] = cherrypy.request.headers[key]
+		print 'done'
+		formFields = FileFieldStorage(fp=cherrypy.request.rfile,headers=h,environ={'REQUEST_METHOD':'POST'},keep_blank_values=True)
+		if 'f' in formFields and 'path' in formFields:
+			f = formFields['f']
+			path = formFields.getvalue('path')
+			if self.pathInSync(path) and self.pathExists(path):
+				if hasattr(f.file,'name'):
+					move(f.file.name,path)
+				else:
+					f = open(path,'w')
+					f.file.seek(0,0)
+					f.write(f.file.read())
+					f.close()
+			else:
+				raise cherrypy.HTTPError(400,message="path is not valid")
+		else:
+			raise cherrypy.HTTPError(400,message="f and or path were not found in your request")
 if __name__=='__main__':
 	config = {
 		'/':{

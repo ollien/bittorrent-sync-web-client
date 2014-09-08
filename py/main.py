@@ -24,6 +24,7 @@ class Main(object):
 	@cherrypy.expose
 	def index(self):
 		indexTemplate = templates.get_template('index.html')
+		# return staticPath+'html'+' | '+staticRoot
 		folders = self.btSync(method='get_folders')
 		return indexTemplate.render(folders=json.loads(folders))
 	@cherrypy.expose
@@ -34,17 +35,11 @@ class Main(object):
 		else:
 			files = None
 			path = '/'.join(args)
-			print path
 			if path[0]!='/':
 				path = '/'+path
-				print path
 			secrets = json.loads(self.btSync(method='get_folders'))
 			secret = None
 			for item in secrets:
-				print '---'
-				print item['dir']
-				print path
-				print item['dir'] in path
 				if item['dir'] in path:
 					secret = item['secret']
 					path=path.replace(item['dir'],"")
@@ -61,7 +56,6 @@ class Main(object):
 			return 'true'
 		elif create and not os.path.exists(path):
 			check = os.path.abspath(os.path.join(path, os.pardir))
-			print check
 			if (os.access(path,os.R_OK) and os.access(path,os.W_OK)) or (os.access(check,os.R_OK) and os.access(check,os.W_OK)):
 				os.makedirs(path)
 				return 'true'
@@ -84,23 +78,18 @@ class Main(object):
 			#A fix to start at the root of the drive.
 			if path[0]!='/':
 				path = '/'+path
-			print path
 			if self.pathInSync(path):
 				f = file(path)			
 				cherrypy.response.headers['Content-Type'] = getType(path)[0]
 				return f
 			else:
-				print 'nope'
 				raise cherrypy.HTTPError(403)
 		except IOError:
-			print "hm"
 			return json.dumps({'Error':"File doesn't exist."})
 	def pathInSync(self,path):
 		result = json.loads(self.btSync(method='get_folders'))
 		folders = [item['dir'] for item in result]
-		print path
 		for item in folders:
-			print item
 			if item in path:
 				return True
 		return False
@@ -115,12 +104,10 @@ class Main(object):
 	@cherrypy.expose
 	@cherrypy.tools.noBodyProcess()
 	def upload(self,f=None,path=None):
-		print 'it\'s a file jim!'
 		# f.seek(0,0)
 		h = {}
 		for key in cherrypy.request.headers:
 			h[key.lower()] = cherrypy.request.headers[key]
-		print 'done'
 		formFields = FileFieldStorage(fp=cherrypy.request.rfile,headers=h,environ={'REQUEST_METHOD':'POST'},keep_blank_values=True)
 		if 'f' in formFields and 'path' in formFields:
 			f = formFields['f']
@@ -137,23 +124,26 @@ class Main(object):
 				raise cherrypy.HTTPError(400,message="path is not valid")
 		else:
 			raise cherrypy.HTTPError(400,message="f and or path were not found in your request")
-if __name__=='__main__':
-	config = {
-		'/':{
-			'tools.sessions.on':True,
-			'tools.staticdir.root':staticRoot,
-		},
-		'/secret':{
-			'request.dispatch':cherrypy.dispatch.MethodDispatcher(),
-			'tools.response_headers.on':True,
-			'tools.response_headers.headers': [('Content-Type', 'text/plain')],
-		},
-		'/static':{
-			'tools.staticdir.on':True,
-			'tools.staticdir.dir':'./static/'
-		}
+config = {
+	'/':{
+		'tools.sessions.on':True,
+		'tools.staticdir.root':staticRoot,
+	},
+	'/secret':{
+		'request.dispatch':cherrypy.dispatch.MethodDispatcher(),
+		'tools.response_headers.on':True,
+		'tools.response_headers.headers': [('Content-Type', 'text/plain')],
+	},
+	'/static':{
+		'tools.staticdir.on':True,
+		'tools.staticdir.dir':'./static/'
 	}
-	cherrypy.server.socket_host='0.0.0.0'
-	cherrypy.tree.mount(Main(),'/',config=config)
+}
+application = cherrypy.tree.mount(Main(),'/',config=config)
+if __name__=='__main__':
 	cherrypy.engine.start()
 	cherrypy.engine.block()
+
+	cherrypy.server.socket_host='0.0.0.0'
+	
+	

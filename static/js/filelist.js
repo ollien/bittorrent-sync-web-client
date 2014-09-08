@@ -191,8 +191,7 @@ function isRoot(){
 	return false;
 }
 function updateFolders(){
-	$('#folderList' ).load(window.location.pathname+' #folderList',function(){
-		console.log('hiding deleted');
+	$('#folderList' ).load(window.location.pathname+' #folderList',function(){		
 		setupButtons();
 		hideDeleted();	
 	});

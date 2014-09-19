@@ -6,6 +6,7 @@ import requests
 import json
 import cgi
 import tempfile
+import re
 from shutil import move
 from mimetypes import guess_type as getType
 
@@ -120,6 +121,11 @@ class Main(object):
 		if 'f' in formFields and 'path' in formFields:
 			f = formFields['f']
 			path = formFields.getvalue('path')
+			search = re.search('------WebKitFormBoundary.{16}--\Z',path)
+			if search != None:
+				path = path.replace(search.group(),'')
+				print path
+			path = path.rstrip()
 			print type(f)
 			if self.pathInSync(path) and self.pathExists(path):
 				if hasattr(f.file,'name'):
@@ -129,11 +135,6 @@ class Main(object):
 					print f.file.name
 					print os.path.exists(path)
 					return 'moved.'
-				# else:
-				# 	f = open(path,'w')
-				# 	f.seek(0,0)
-				# 	f.write(f.read())
-				# 	f.close()
 			else:
 				raise cherrypy.HTTPError(400,message="path is not valid")
 		else:

@@ -8,8 +8,8 @@
 	<link href="/static/css/index.css" rel="stylesheet" type='text/css'>
 </head>
 <body>
-	<button id='addSecret' class='btn btn-primary'>Add Secret</button>
-	<input type="file" id='upload' class='btn btn-primary'/>
+	<button id='addSecret' class='btn btn-primary'>Add a Secret</button>
+	<button id='uploadButton' class='btn btn-primary'>Upload a file</button>
 	<span id='loading' style="display:none">Loading...</span>
 	<div id="folders">
 		<ul class="media-list" id="folderList">
@@ -59,6 +59,21 @@
 				<div class="modal-footer">
 					<button class="btn btn-default" data-dismiss="modal">Cancel</button>
 					<button id="confirmAddSecret" class="btn btn-primary">Add</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="dupeUploadModal" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title">Upload a file</h4>
+				</div>
+				<div id="dupeUploadModal" class="modal-body">
+					<input type="file" id='upload'/>
+					<span id="uploadStatus"></span>
 				</div>
 			</div>
 		</div>

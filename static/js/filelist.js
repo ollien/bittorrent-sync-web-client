@@ -1,5 +1,5 @@
 var parentFolder	;
-var readWrite = false;
+var uploading = false;
 function setupButtons(){
 	$('.folderItem').click(function(event){
 		var t = $(this);
@@ -52,6 +52,9 @@ function setupButtons(){
 	});
 	$('#secretInput').popover({'trigger':'manual'});
 	$('#dirInput').popover({'trigger':'manual'});
+	// $('#doneUpload').click(function(event)){
+	// 	$('#uploadModal').modal('hide');
+	// });
 	$('#confirmAddSecret').click(function(event){
 		var secret = $('#secretInput').val();
 		var dir = $('#dirInput').val();
@@ -142,25 +145,48 @@ function setupButtons(){
 	});
 	$('#upload').change(function(event){
 		var fileList = $('#upload')[0].files
+		var path = createPath()+'/'+fileList[0].name
 		if (fileList.length==1){
-			//JSON likes to not handle files correctly, so we use FormData
-			data = new FormData()
-			data.append('f',fileList[0]);
-			data.append('path',createPath()+'/'+fileList[0].name);
-			// var data = {'f':$('#upload')[0].files, 'path':'null for now'}
-			console.log('uploading');
-			$.ajax({
-				url:'/upload',
-				type:'POST',
-				data:data,
-				processData:false,
-				contentType:false,
-				success:function(data){
-					console.log(data);
-					updateFolders();
+			$.get('/file_exists',{'path':path},function(data){
+				console.log(data);
+				if (data=='false'){	
+					$('#uploadStatus').text("Uploading");
+					uploading = true;
+					startUploadingDots();
+					//JSON likes to not handle files correctly, so we use FormData
+					data = new FormData()
+					data.append('f',fileList[0]);
+					var path = createPath()+'/'+fileList[0].name;
+					data.append('path',path);
+					// var data = {'f':$('#upload')[0].files, 'path':'null for now'}
+					console.log('uploading');
+					$.ajax({
+						url:'/upload',
+						type:'POST',
+						data:data,
+						processData:false,
+						contentType:false,
+						success:function(data){
+							console.log(data);
+							console.log('done1');
+							$('#uploadStatus').text("Done.");
+							stopUploadingDots();
+							$('#uploadModal').modal('hide');
+							updateFolders();
+						}
+					});
+				}
+				else{
+					$('#uploadStatus').text("This file already exists. Either rename the file you are uploading or choose another file.");
+					$('#uploadStatus').addClass('error');
+					
 				}
 			});
 		}
+		
+	});
+	$('#uploadButton').click(function(event){
+		$('#uploadModal').modal('show');
 	});
 }
 function createPath(){
@@ -175,14 +201,28 @@ function hideDeleted(){
 			$(items[i]).hide();
 	}
 }
+function startUploadingDots(count){
+	if (uploading){
+		if (count===undefined)
+			count = 0;
+		if (count==4)
+			count = -1; //count +1 will make this zero
+		$('#uploadStatus').text("Uploading"+".".repeat(count));
+		setTimeout(function(){startUploadingDots(count+1)}, 500);
+	}
+}
+function stopUploadingDots(){
+	uploading=false;
+	$('#uploadStatus').text();
+}
 function secretInPage(){
 	var items = $('.folderItem');
 	for (var i=0; i<items.length; i++){
 		if ($(items[i]).attr('secret')!="null"){
-			return true;
+			return $(items[i]).attr('secret');
 		}
 	}
-	return false;
+	return null;
 }
 function isRoot(){
 	if (window.location.pathname=='/'){
@@ -192,18 +232,37 @@ function isRoot(){
 }
 function updateFolders(){
 	$('#folderList' ).load(window.location.pathname+' #folderList',function(){		
+		console.log('running');
 		setupButtons();
-		hideDeleted();	
+		hideDeleted();
+		console.log('done2');
+		outputLength = $('#folderList');	
 	});
 	
 }
+function getPing(){
+	var time = new Date().getTime();
+	$.ajax({
+		type: "GET",
+		url: '/hello',
+		async: false
+	});
+	return new Date().getTime() - time;
+}
+//stolen from stackoverflow, allows me to repeat strings.
+String.prototype.repeat = function(num)
+{
+	return new Array( num + 1 ).join(this);
+}
 $(document).ready(function(){
+	// console.log(getPing());
 	if (!isRoot()){
 		$('#addSecret').hide();
 	}
 	else{
-		$('#upload').hide();
+		$('#uploadButton').hide();
 	}
 	setupButtons();
 	hideDeleted();
+	outputLength = $('#folderList').length;
 });

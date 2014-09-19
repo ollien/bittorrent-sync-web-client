@@ -39,3 +39,7 @@ div.folderBlock{
 	width:300px;
 	max-width:300px;
 }
+.error{
+	transition: all .08s ease-in;
+	color:red;
+}

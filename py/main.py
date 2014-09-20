@@ -25,15 +25,20 @@ cherrypy.tools.noBodyProcess = cherrypy.Tool('before_request_body', noBodyProces
 class Main(object):
 	@cherrypy.expose
 	def index(self):
-		indexTemplate = templates.get_template('index.html')
+		return self.folder();
+		# indexTemplate = templates.get_template('index.html')
 		# return staticPath+'html'+' | '+staticRoot
-		folders = self.btSync(method='get_folders')
-		return indexTemplate.render(folders=json.loads(folders))
+		# folders = self.btSync(method='get_folders')
+		# return indexTemplate.render(folders=json.loads(folders))
 	@cherrypy.expose
 	def folder(self,*args):
 		indexTemplate = templates.get_template('index.html')
+		response = None
 		if len(args)==0:
 			path=''
+			response = self.btSync(method='get_folders')
+			response = json.loads(response)
+			response = sorted(response, key=lambda k: k['dir'])
 		else:
 			files = None
 			path = '/'.join(args)
@@ -45,8 +50,11 @@ class Main(object):
 				if item['dir'] in path:
 					secret = item['secret']
 					path=path.replace(item['dir'],"")
-		files = self.btSync(method='get_files',secret=secret,path=path)
-		return indexTemplate.render(folders=json.loads(files))
+			response = self.btSync(method='get_files',secret=secret,path=path)
+			response = json.loads(response)	
+			response = sorted(response, key=lambda k: k['name'])
+		print response
+		return indexTemplate.render(folders=response)
 	@cherrypy.expose
 	def dirExists(self,path,create=False):
 		if type(create)!=bool:

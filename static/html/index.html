@@ -29,15 +29,16 @@
 							{% if item['type'] == 'folder' %}
 								<img class='folderIcon' src='/static/img/folder.png'>
 							{% else %}
-								 <img class='folderIcon' src='/static/img/file.png'>
+								 <img class='folderIcon' src='/static/img/file.png'> 
 							{% endif %}
 							<span class="folderPath">{{item['name']}}</span>
+							<button class="deleteButton btn btn-danger">Delete</button>
 						{% endif %}
 						
 					</div>
 				</li>
 				{% else %}
-				<span id="noFolders"> no folders.</span>
+				<span id="noFolders">There are no files or folders to show.</span>
 			{% endfor %}
 		</ul>
 	</div>

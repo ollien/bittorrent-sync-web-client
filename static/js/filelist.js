@@ -188,6 +188,12 @@ function setupButtons(){
 	$('#uploadButton').click(function(event){
 		$('#uploadModal').modal('show');
 	});
+	
+	$('.deleteButton').click(function(event){
+		event.stopPropagation();
+		var item = $(this).parent().find("> span.folderPath");
+		console.log("Deleting "+$(item).text());
+	});
 }
 function createPath(){
 	if (window.location.pathname.indexOf('/folder/') > -1)

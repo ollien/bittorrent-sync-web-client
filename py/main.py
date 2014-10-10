@@ -15,9 +15,10 @@ staticPath = os.path.join(os.path.dirname(os.path.abspath(os.getcwd())),'static/
 templates = jinja2.Environment(loader=jinja2.FileSystemLoader(staticPath+'html'))
 syncIp = "127.0.0.1:8888"
 syncAddr = "http://"+syncIp+"/api"
+basePath = "/mnt/bakery" # A specific string that is needed to be stripped from my file path
 class FileFieldStorage(cgi.FieldStorage):
 	def make_file(self,binary=None):
-		return tempfile.NamedTemporaryFile(delete=False)
+		return tempfile.NamedTemporaryFile(delete=True)
 def noBodyProcess():
 	cherrypy.request.process_request_body = False
 
@@ -89,9 +90,20 @@ class Main(object):
 			if path[0]!='/':
 				path = '/'+path
 			if self.pathInSync(path):
-				f = file(path)
-				cherrypy.response.headers['Content-Type'] = getType(path)[0]
-				return f
+					# return cherrypy.lib.static.serve_file(path,"application/x-download",os.path.basename(path))
+					# cherrypy.response.headers.clear()
+					# cherrypy.response.headers['X-Sendfile'] = os.path.basename(path)
+					# cherrypy.response.status = 200
+					p = path.replace(basePath,"")
+					cherrypy.response.headers.update({
+					  'X-Accel-Redirect'    : '/download/{0}'.format(p),
+					  'Content-Disposition' : 'attachment; filename={0}'.format(os.path.basename(path)),
+					  'Content-Type'        : 'application/octet-stream'
+					})
+					# return "goign"
+				# f = file(path)
+				# cherrypy.response.headers['Content-Type'] = getType(path)[0]
+				# return f
 			else:
 				raise cherrypy.HTTPError(403)
 		except IOError,e:
@@ -159,9 +171,12 @@ class Main(object):
 		for item in secrets:
 			if item['dir'] in path:
 				return item['secret']
+	@cherrypy.expose
+	def delete(self,path):
+		if self.pathInSync(path):
+			os.remove(path)
 config = {
 	'/':{
-		'tools.sessions.on':True,
 		'tools.staticdir.root':staticRoot,
 	},
 	'/static':{
@@ -170,6 +185,8 @@ config = {
 	}
 }
 application = cherrypy.tree.mount(Main(),'/',config=config)
+# cherrypy.engine.timeout_monitor.unsubscribe()
+cherrypy.config.update({'tools.sessions.timeout': 1000000}) 
 if __name__=='__main__':
 	cherrypy.engine.start()
 	cherrypy.engine.block()

@@ -185,8 +185,6 @@ config = {
 	}
 }
 application = cherrypy.tree.mount(Main(),'/',config=config)
-# cherrypy.engine.timeout_monitor.unsubscribe()
-cherrypy.config.update({'tools.sessions.timeout': 1000000}) 
 if __name__=='__main__':
 	cherrypy.engine.start()
 	cherrypy.engine.block()

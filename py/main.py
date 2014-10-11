@@ -175,6 +175,8 @@ class Main(object):
 	def delete(self,path):
 		if self.pathInSync(path):
 			os.remove(path)
+			return json.dumps({"error":0})
+		return json.dumps({"error":1})
 config = {
 	'/':{
 		'tools.staticdir.root':staticRoot,

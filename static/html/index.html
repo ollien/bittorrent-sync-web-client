@@ -42,7 +42,6 @@
 			{% endfor %}
 		</ul>
 	</div>
-	something else
 	<div class="modal fade bs-example-modal-sm" id="addSecretModal" tabindex="-1" role="dialog" aria-labelledby="addSecretModal" aria-hidden="true">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content">
@@ -75,6 +74,24 @@
 				<div id="dupeUploadModal" class="modal-body">
 					<input type="file" id='upload'/>
 					<span id="uploadStatus"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelled="deleteModal" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title">Delete file?</h4>
+				</div>
+				<div class="modal-body" id="deleteModalBody">
+					Are you sure you want to delete <span id="deleteFilename"></span>?
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button id="confirmDelete" class="btn btn-danger">Delete</button>
 				</div>
 			</div>
 		</div>

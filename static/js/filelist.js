@@ -3,12 +3,9 @@ var uploading = false;
 function setupButtons(){
 	$('.folderItem').click(function(event){
 		var t = $(this);
-		console.log($(t).attr('type'));
-		console.log($(this).attr('type'));
 		var type = $(this).attr('type');
 		var name = $(this).attr('name');
 		var secret = $(this).attr('secret');
-		console.log(name)
 		if (secret=="null"){
 			secret = parentFolder;
 		}
@@ -35,10 +32,7 @@ function setupButtons(){
 		else{
 			window.location.href = '/getFile'+createPath()+'/'+name
 		}
-		
-		// else if (type=="read/write"){
-		// 	readWrite=true;
-		// }
+
 	});
 	$('.folderSecret').click(function(event){
 		event.stopPropagation();
@@ -73,7 +67,6 @@ function setupButtons(){
 				else{
 					result=false;
 				}
-				console.log(result);
 				if (result===true && secret.length>0){
 					$.post('/sync',{'method':'add_folder','dir':dir,'secret':secret},function(data){
 						data = JSON.parse(data);
@@ -148,7 +141,6 @@ function setupButtons(){
 		var path = createPath()+'/'+fileList[0].name
 		if (fileList.length==1){
 			$.get('/file_exists',{'path':path},function(data){
-				console.log(data);
 				if (data=='false'){	
 					$('#uploadStatus').text("Uploading");
 					uploading = true;
@@ -159,7 +151,6 @@ function setupButtons(){
 					var path = createPath()+'/'+fileList[0].name;
 					data.append('path',path);
 					// var data = {'f':$('#upload')[0].files, 'path':'null for now'}
-					console.log('uploading');
 					$.ajax({
 						url:'/upload',
 						type:'POST',
@@ -167,8 +158,6 @@ function setupButtons(){
 						processData:false,
 						contentType:false,
 						success:function(data){
-							console.log(data);
-							console.log('done1');
 							$('#uploadStatus').text("Done.");
 							stopUploadingDots();
 							$('#uploadModal').modal('hide');
@@ -191,9 +180,29 @@ function setupButtons(){
 	
 	$('.deleteButton').click(function(event){
 		event.stopPropagation();
+		
 		var item = $(this).parent().find("> span.folderPath");
-		console.log("Deleting "+$(item).text());
+		
+		$('#deleteFilename').text(item.text());
+		$('#deleteModal').modal('show');
+		
 	});
+	$('#confirmDelete').click(function(event){
+		event.stopPropagation();
+		var item = $('#deleteFilename').text()
+		var fullPath = createPath()+"/"+item;
+		$.post('/delete',{'path':fullPath},function(data){
+			data = JSON.parse(data);
+			if (data['error']==0){
+				updateFolders();
+				$('#deleteModal').modal('hide');
+			}
+			else{
+				console.log("Error deleting.")
+			}
+		});
+		
+	})
 }
 function createPath(){
 	if (window.location.pathname.indexOf('/folder/') > -1)
@@ -238,10 +247,8 @@ function isRoot(){
 }
 function updateFolders(){
 	$('#folderList' ).load(window.location.pathname+' #folderList',function(){		
-		console.log('running');
 		setupButtons();
 		hideDeleted();
-		console.log('done2');
 		outputLength = $('#folderList');	
 	});
 	
@@ -261,7 +268,6 @@ String.prototype.repeat = function(num)
 	return new Array( num + 1 ).join(this);
 }
 $(document).ready(function(){
-	// console.log(getPing());
 	if (!isRoot()){
 		$('#addSecret').hide();
 	}

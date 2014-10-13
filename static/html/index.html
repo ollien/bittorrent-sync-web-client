@@ -23,17 +23,18 @@
 					<div class='folderBlock'>
 						{% if 'dir' in item %}
 							<img class='folderIcon' src='/static/img/folder.png'>
-							<span class="folderPath">{{item['dir']}}</span>
+							<a href="folder/{{item['dir']}}" class="folderPath">{{item['dir']}}</a>
 							Secret:<input class="folderSecret" value="{{item['secret']}}" readonly="readonly" type="password"></input>
 						{% else %}
 							{% if item['type'] == 'folder' %}
 								<img class='folderIcon' src='/static/img/folder.png'>
+								<a href="{{item['name']}}" class="folderPath">{{item['name']}}</a>
 							{% else %}
 								 <img class='folderIcon' src='/static/img/file.png'> 
+								 <a href="javascript:void(0)" name="{{item['name']}}" class="folderPath fileItem">{{item['name']}}</a>
+								 <button class="publicButton btn btn-info">Make Public</button>
+								 <button class="deleteButton btn btn-danger">Delete</button>
 							{% endif %}
-							<span class="folderPath">{{item['name']}}</span>
-							<button class="publicButton btn btn-info">Make Public</button>
-							<button class="deleteButton btn btn-danger">Delete</button>
 						{% endif %}
 						
 					</div>

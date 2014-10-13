@@ -1,38 +1,12 @@
 var parentFolder	;
 var uploading = false;
 function setupButtons(){
-	$('.folderItem').click(function(event){
-		var t = $(this);
-		var type = $(this).attr('type');
+	$('.fileItem').click(function(event){
+		event.stopPropagation();
 		var name = $(this).attr('name');
-		var secret = $(this).attr('secret');
-		if (secret=="null"){
-			secret = parentFolder;
-		}
-		else{
-			parentFolder = secret;
-		}
-		if (type=='folder'){
-			// loadFolder(name,secret);
-			if (name[0]=='/'){
-				name=name.substring(1,name.length);
-			}
-			if (window.location.href[window.location.href.length-1]=='/'){
-				if (window.location.href.indexOf('/folder/')==-1){
-					window.location.href+='folder/'+name
-				}
-				else{
-					window.location.href+=name;
-				}
-			}
-				
-			else
-				window.location.href+='/'+name;
-		}
-		else{
-			window.location.href = '/getFile'+createPath()+'/'+name
-		}
-
+		window.location.href = '/getFile'+createPath()+'/'+name
+		event.preventDefault();
+	
 	});
 	$('.folderSecret').click(function(event){
 		event.stopPropagation();
@@ -207,7 +181,6 @@ function setupButtons(){
 		event.stopPropagation();
 		var item = $(this).parent().find("> span.folderpath")
 		var fullPath = createPath()+"/"+item.text();
-		console.log(fullPath);
 		$.post('/makePublic',{'path':fullPath},function(data){
 			data = JSON.parse(data);
 			if (data['error']==0){

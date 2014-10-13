@@ -32,6 +32,17 @@ div.folderBlock{
 .folderPath{
 	margin-right: 20px;
 }
+a.folderPath:link a.foldderPath:visited{
+	color:#1C3851;
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: none;
+}
+a:active{
+	color:#0F1F2D;
+	text-decoration: none;
+}
 .folderBlock > img{
 	 float:left;
 }

@@ -7,8 +7,9 @@ import json
 import cgi
 import tempfile
 import re
+import uuid
 from shutil import move
-from mimetypes import guess_type as getType
+
 
 staticRoot = os.path.dirname(os.path.abspath(os.getcwd()))
 staticPath = os.path.join(os.path.dirname(os.path.abspath(os.getcwd())),'static/')
@@ -16,6 +17,7 @@ templates = jinja2.Environment(loader=jinja2.FileSystemLoader(staticPath+'html')
 syncIp = "127.0.0.1:8888"
 syncAddr = "http://"+syncIp+"/api"
 basePath = "/mnt/bakery" # A specific string that is needed to be stripped from my file path
+publicPath = "public/" #The location of all public symlinks
 class FileFieldStorage(cgi.FieldStorage):
 	def make_file(self,binary=None):
 		return tempfile.NamedTemporaryFile(delete=True)
@@ -54,7 +56,6 @@ class Main(object):
 			response = self.btSync(method='get_files',secret=secret,path=path)
 			response = json.loads(response)	
 			response = sorted(response, key=lambda k: k['name'])
-		print response
 		return indexTemplate.render(folders=response)
 	@cherrypy.expose
 	def dirExists(self,path,create=False):
@@ -137,23 +138,18 @@ class Main(object):
 		for key in cherrypy.request.headers:
 			h[key.lower()] = cherrypy.request.headers[key]
 		formFields = FileFieldStorage(fp=cherrypy.request.rfile,headers=h,environ={'REQUEST_METHOD':'POST'},keep_blank_values=True)
-		print formFields.keys()
 		if 'f' in formFields and 'path' in formFields:
 			f = formFields['f']
 			path = formFields.getvalue('path')
 			search = re.search('------WebKitFormBoundary.{16}--\Z',path)
 			if search != None:
 				path = path.replace(search.group(),'')
-				print path
 			path = path.rstrip()
-			print type(f)
 			if self.pathInSync(path) and self.pathExists(path):
 				if hasattr(f.file,'name'):
 					move(f.file.name,path)
 					os.chmod(path,0776)
 					# os.remove(f.file.name)
-					print f.file.name
-					print os.path.exists(path)
 					return 'moved.'
 			else:
 				raise cherrypy.HTTPError(400,message="path is not valid")
@@ -161,7 +157,6 @@ class Main(object):
 			raise cherrypy.HTTPError(400,message="f and or path were not found in your request")
 	@cherrypy.expose
 	def 	file_exists(self,path):
-		print path
 		if os.path.exists(path):
 			return 'true'
 		return 'false'
@@ -176,6 +171,36 @@ class Main(object):
 		if self.pathInSync(path):
 			os.remove(path)
 			return json.dumps({"error":0})
+		return json.dumps({"error":1})
+	def fileInPublic(self,path):
+		p = os.path.join(basePath,publicPath)
+		if p in path:
+			return True
+		else:
+			return False
+	@cherrypy.expose
+	def public(self,f):
+		path = os.path.join(basePath,publicPath,f)
+		if self.fileInPublic(path):
+			try:
+				os.stat(path)
+			except OSError:
+				return "File does not exist."
+			cherrypy.response.headers.update({
+			  'X-Accel-Redirect'    : '/download/'+os.path.join(publicPath,f),
+			  'Content-Disposition' : 'attachment; filename='+os.path.basename(os.readlink(path)),
+			  'Content-Type'        : 'application/octet-stream'
+			})		
+			# return "boom goes the dynamite!"
+		else: #This shoudl never actually happen, but it's just a safeguard.
+			return "File is not shared publicly"
+	@cherrypy.expose
+	def makePublic(self,path):
+		if self.pathInSync(path):
+			uid = uuid.uuid4().hex
+			p = os.path.join(basePath,publicPath,'1234')
+			os.symlink(path,os.path.join(basePath,publicPath,uid))
+			return json.dumps({"error":0,"url":'/public/'+uid})
 		return json.dumps({"error":1})
 config = {
 	'/':{

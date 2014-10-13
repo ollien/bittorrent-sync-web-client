@@ -202,7 +202,27 @@ function setupButtons(){
 			}
 		});
 		
-	})
+	});
+	$('.publicButton').click(function(event){
+		event.stopPropagation();
+		var item = $(this).parent().find("> span.folderpath")
+		var fullPath = createPath()+"/"+item.text();
+		console.log(fullPath);
+		$.post('/makePublic',{'path':fullPath},function(data){
+			data = JSON.parse(data);
+			if (data['error']==0){
+				$('#publicURL').val(window.location.origin+data['url'])
+				$('#publicModal').modal('show');
+			}
+			else{
+				console.log('Error making public.');
+			}
+		});
+	});
+	$('#donePublic').click(function(event){
+		event.stopPropagation();
+		$('publicModal').modal('hide');
+	});
 }
 function createPath(){
 	if (window.location.pathname.indexOf('/folder/') > -1)

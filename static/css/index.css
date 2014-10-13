@@ -43,3 +43,6 @@ div.folderBlock{
 	transition: all .08s ease-in;
 	color:red;
 }
+#publicURL{
+	width:100%;
+}

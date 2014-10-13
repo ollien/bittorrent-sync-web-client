@@ -32,6 +32,7 @@
 								 <img class='folderIcon' src='/static/img/file.png'> 
 							{% endif %}
 							<span class="folderPath">{{item['name']}}</span>
+							<button class="publicButton btn btn-info">Make Public</button>
 							<button class="deleteButton btn btn-danger">Delete</button>
 						{% endif %}
 						
@@ -96,7 +97,22 @@
 			</div>
 		</div>
 	</div>
-				
+	<div class="modal fade" id="publicModal" tabIndex="-1" role="dialog" aria-labelled="publicModal" aria-hdiden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title">File is public!</h4>
+				</div>
+				<div class="modal-body" id="publicModalBody">
+					<input id="publicURL" readonly="readonly"></input>
+				</div>
+				<div class="modal-footer">
+					<button id="donePublic" class="btn btn-primary">Done</button>
+				</div>
+			</div>
+		</div>
+	</div>
 	
 </body>
 </html>

@@ -195,7 +195,7 @@ function setupButtons(){
 	});
 	$('#donePublic').click(function(event){
 		event.stopPropagation();
-		$('publicModal').modal('hide');
+		$('#publicModal').modal('hide');
 	});
 }
 function createPath(){

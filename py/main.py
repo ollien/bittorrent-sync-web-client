@@ -1,4 +1,3 @@
-
 import cherrypy
 import os, os.path
 import jinja2
@@ -197,11 +196,23 @@ class Main(object):
 	@cherrypy.expose
 	def makePublic(self,path):
 		if self.pathInSync(path):
-			uid = uuid.uuid4().hex
-			p = os.path.join(basePath,publicPath,'1234')
-			os.symlink(path,os.path.join(basePath,publicPath,uid))
-			return json.dumps({"error":0,"url":'/public/'+uid})
+			result = self.checkForPublicDupe(path)
+			if result!=None:
+				return json.dumps({"error":0,"url":'/public/'+result})
+			else:
+				uid = uuid.uuid4().hex
+				# p = os.path.join(basePath,publicPath,'1234')
+				os.symlink(path,os.path.join(basePath,publicPath,uid))
+				return json.dumps({"error":0,"url":'/public/'+uid})
 		return json.dumps({"error":1})
+	def checkForPublicDupe(self,path):
+		p = os.path.join(basePath,publicPath)
+		d = os.listdir(p)
+		for item in d:
+			if os.readlink(os.path.join(basePath,publicPath,item))==path:
+				return item
+		return None
+				
 config = {
 	'/':{
 		'tools.staticdir.root':staticRoot,

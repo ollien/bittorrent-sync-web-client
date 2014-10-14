@@ -155,7 +155,7 @@ function setupButtons(){
 	$('.deleteButton').click(function(event){
 		event.stopPropagation();
 		
-		var item = $(this).parent().find("> span.folderPath");
+		var item = $(this).parent().find("> a.folderPath");
 		
 		$('#deleteFilename').text(item.text());
 		$('#deleteModal').modal('show');
@@ -179,8 +179,9 @@ function setupButtons(){
 	});
 	$('.publicButton').click(function(event){
 		event.stopPropagation();
-		var item = $(this).parent().find("> span.folderpath")
-		var fullPath = createPath()+"/"+item.text();
+		var item = $(this).parent().find("> a.folderpath")
+		var fullPath = createPath()+item.attr('name');
+		console.log(fullPath);
 		$.post('/makePublic',{'path':fullPath},function(data){
 			data = JSON.parse(data);
 			if (data['error']==0){

@@ -152,8 +152,12 @@ class Main(object):
 					return 'moved.'
 			else:
 				raise cherrypy.HTTPError(400,message="path is not valid")
+		elif 'f' not in formFields:
+			raise cherrypy.HTTPError(400,message="f was not found in your request")
+		elif 'path' not in formFields:
+			raise cherrypy.HTTPError(400,message="path was not found in your request")
 		else:
-			raise cherrypy.HTTPError(400,message="f and or path were not found in your request")
+			raise cherrypy.HTTPError(400,message="unknown error with upload")
 	@cherrypy.expose
 	def 	file_exists(self,path):
 		if os.path.exists(path):
@@ -212,16 +216,16 @@ class Main(object):
 			if os.readlink(os.path.join(basePath,publicPath,item))==path:
 				return item
 		return None
-				
-config = {
-	'/':{
-		'tools.staticdir.root':staticRoot,
-	},
-	'/static':{
-		'tools.staticdir.on':True,
-		'tools.staticdir.dir':'./static/'
-	}
-}
+config={}				
+# config = {
+#     '/':{
+#         'tools.staticdir.root':staticRoot,
+#     },
+#     '/static':{
+#         'tools.staticdir.on':True,
+#         'tools.staticdir.dir':'./static/'
+#     }
+# }
 application = cherrypy.tree.mount(Main(),'/',config=config)
 if __name__=='__main__':
 	cherrypy.engine.start()

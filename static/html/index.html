@@ -14,49 +14,34 @@
 	<link href="/static/bower_components/font-roboto/roboto.html" rel="import">
 	<link href="/static/bower_components/core-toolbar/core-toolbar.html" rel="import">
 	<link href="/static/bower_components/paper-dialog/paper-dialog.html" rel="import">
+	<link href="/static/bower_components/paper-item/paper-item.html" rel="import">
 	<!-- My own custom polymer elements -->
 	<link href="/static/custom_components/center-paper-ripple-button/center-paper-ripple-button.html" rel="import">
 </head>
 <body fullbleed vertical layout unresolved>
 		<core-toolbar id="toolbar">
+			<paper-shadow z="2"></paper-shadow>
 			<center-paper-ripple-button icon="menu" on-tap="{{iconPressed}}" recenteringTouch=true></center-paper-ripple-button>
-			<div flex>Title</div>
-			<center-paper-ripple-button id="addSecret" icon="add"</center-paper-ripple-button>
+			<div id="toolbarTitle" flex>Bit Torrent Sync Web</div>
+			<center-paper-ripple-button id="addSecret" icon="add"></center-paper-ripple-button>
 		</core-toolbar>
+		
 	<button id='uploadButton' class='btn btn-primary'>Upload a file</button>
 	<span id='loading' style="display:none">Loading...</span>
+	
 	<div id="folders">
-		<ul class="media-list" id="folderList">
 			{% for item in folders %}
 				{% if 'dir' in item %}
-					<li class='media folderItem' name="{{item['dir']}}" type="folder" secret="{{item['secret']}}" items="{{item['secret']}}"> 
+					<paper-item icon="folder" class='folderItem' label="{{item['dir']}}" type="folder" secret="{{item['secret']}}" items="{{item['secret']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="folder/{{item['dir']}}"></a> </paper-item>
+				{% elif item['type'] == 'folder' %}
+					<paper-item icon="folder" class='folderItem' label="{{item['name']}}" type="folder" secret="{{item['secret']}}" state="{{item['state']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="{{item['name']}}"></a> </paper-item>
 				{% else %}
-					<li class='media folderItem' name="{{item['name']}}" type="{{item['type']}}" secret="null" state="{{item['state']}}"> 
+					<paper-item icon="drive-file" class='folderItem' label="{{item['name']}}" type="{{item['type']}}" secret="null" state="{{item['state']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="javascript:void(0)" name="{{item['name']}}" class="fileItem"></a></paper-item>
 					
 				{% endif %}
-					<div class='folderBlock'>
-						{% if 'dir' in item %}
-							<img class='folderIcon' src='/static/img/folder.png'>
-							<a href="folder/{{item['dir']}}/" class="folderPath">{{item['dir']}}</a>
-							Secret:<input class="folderSecret" value="{{item['secret']}}" readonly="readonly" type="password"></input>
-						{% else %}
-							{% if item['type'] == 'folder' %}
-								<img class='folderIcon' src='/static/img/folder.png'>
-								<a href="{{item['name']}}/" class="folderPath">{{item['name']}}</a>
-							{% else %}
-								 <img class='folderIcon' src='/static/img/file.png'> 
-								 <a href="javascript:void(0)" name="{{item['name']}}" class="folderPath fileItem">{{item['name']}}</a>
-								 <button class="publicButton btn btn-info">Make Public</button>
-								 <button class="deleteButton btn btn-danger">Delete</button>
-							{% endif %}
-						{% endif %}
-						
-					</div>
-				</li>
-				{% else %}
+			{% else %}
 				<span id="noFolders">There are no files or folders to show.</span>
 			{% endfor %}
-		</ul>
 	</div>
 	<div class="modal fade bs-example-modal-sm" id="addSecretModal" tabindex="-1" role="dialog" aria-labelledby="addSecretModal" aria-hidden="true">
 		<div class="modal-dialog modal-sm">

@@ -1,51 +1,20 @@
-img.folderIcon{
-	max-width:32px;
-	max-width:32px;	
-}
-ul#folderList{
-	
-}
+
 div#folders{
+	margin-top: 1.5%;
 	margin-left: 5%;
 	margin-right: 5%;
-	border-top: 1px #AAAAAA solid;
-	border-left: 1px #AAAAAA solid;
-	border-right: 1px #AAAAAA solid;
+	margin-bottom: 1.5%;
 }
-li.folderItem{
-	margin-top:0px;
-	border-bottom: 1px #AAAAAA solid;
-}
-li.folderItem:hover{
-  transition: all .08s ease-in;
-	background:#dddddd;
+body{
+	background-color: #e7e7e7;
 }
 
-div.folderBlock{
-	position: relative;
+paper-item.folderItem{
+	background-color:#f9f9f9
+	margin-top:.9%;
+	border-bottom: 1px #AAAAAA solid;
 }
-.folderBlock > span{
-	 margin-top: 8px;
-	 float:left;
-	 font-weight: 500;
-}
-.folderPath{
-	margin-right: 20px;
-}
-a.folderPath:link a.foldderPath:visited{
-	color:#1C3851;
-	text-decoration: none;
-}
-a:hover{
-	text-decoration: none;
-}
-a:active{
-	color:#0F1F2D;
-	text-decoration: none;
-}
-.folderBlock > img{
-	 float:left;
-}
+
 #addSecretModalBody > .popover{
 	width:300px;
 	max-width:300px;
@@ -61,4 +30,7 @@ a:active{
 /* Project polymer stuff */
 core-toolbar#toolbar{
 	background-color:#5badff;
+}
+#addSecret::shadow #ripple{
+	pointer-events:none;
 }

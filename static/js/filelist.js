@@ -1,7 +1,7 @@
 var parentFolder	;
 var uploading = false;
 function setupButtons(){
-	$('.fileItem').click(function(event){
+	$('a.fileItem').click(function(event){
 		event.stopPropagation();
 		var name = $(this).attr('name');
 		window.location.href = '/getFile'+createPath()+'/'+name
@@ -206,8 +206,9 @@ function createPath(){
 function hideDeleted(){
 	var items = $('.folderItem');
 	for (var i=0; i<items.length; i++){
-		if ($(items[i]).attr('state')=="deleted")
+		if ($(items[i]).attr('state')=="deleted"){
 			$(items[i]).hide();
+		}
 	}
 }
 function startUploadingDots(count){

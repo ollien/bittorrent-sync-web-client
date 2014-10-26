@@ -57,3 +57,8 @@ a:active{
 #publicURL{
 	width:100%;
 }
+
+/* Project polymer stuff */
+core-toolbar#toolbar{
+	background-color:#5badff;
+}

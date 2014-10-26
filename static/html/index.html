@@ -1,14 +1,28 @@
+
+<!-- <script src='/static/bower_components/polymer/polymer.js'></script> -->
 <html>
 <head>
 	<title>Title!</title>
+	<script src='/static/bower_components/platform/platform.js'></script>
+	<link href="/static/bower_components/polymer/polymer.html" rel="import">
 	<script src="/static/js/jquery.js"></script>
 	<script src='/static/bootstrap/js/bootstrap.min.js'></script>
 	<script src="/static/js/filelist.js"></script>
 	<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" type='text/css'>
 	<link href="/static/css/index.css" rel="stylesheet" type='text/css'>
+	<!-- Project Polymer elements -->
+	<link href="/static/bower_components/font-roboto/roboto.html" rel="import">
+	<link href="/static/bower_components/core-toolbar/core-toolbar.html" rel="import">
+	<link href="/static/bower_components/paper-dialog/paper-dialog.html" rel="import">
+	<!-- My own custom polymer elements -->
+	<link href="/static/custom_components/center-paper-ripple-button/center-paper-ripple-button.html" rel="import">
 </head>
-<body>
-	<button id='addSecret' class='btn btn-primary'>Add a Secret</button>
+<body fullbleed vertical layout unresolved>
+		<core-toolbar id="toolbar">
+			<center-paper-ripple-button icon="menu" on-tap="{{iconPressed}}" recenteringTouch=true></center-paper-ripple-button>
+			<div flex>Title</div>
+			<center-paper-ripple-button id="addSecret" icon="add"</center-paper-ripple-button>
+		</core-toolbar>
 	<button id='uploadButton' class='btn btn-primary'>Upload a file</button>
 	<span id='loading' style="display:none">Loading...</span>
 	<div id="folders">

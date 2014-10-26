@@ -1,0 +1,15 @@
+<link href="/static/bower_components/polymer/polymer.html" rel="import">
+<link href="/static/bower_components/core-icon-button/core-icon-button.html" rel="import">
+<link href="/static/bower_components/paper-icon-button/paper-icon-button.html" rel="import">
+<polymer-element name="center-paper-ripple-button" extends="paper-icon-button">
+	<script>
+		Polymer('center-paper-ripple-button',{
+			eventDelegates:{
+				down:'downAction',
+			},
+			downAction: function(e){
+				this.super({x:0,y:0});
+			}
+		});
+	</script>
+</polymer-element>

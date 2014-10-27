@@ -19,6 +19,9 @@ paper-item.folderItem{
 	margin-left: 20px;
 	margin-right: 5px;
 }
+.folderSecret{
+	width:0px;
+}
 #addSecretModalBody > .popover{
 	width:300px;
 	max-width:300px;

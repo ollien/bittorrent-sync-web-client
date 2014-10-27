@@ -15,6 +15,9 @@
 	<link href="/static/bower_components/core-toolbar/core-toolbar.html" rel="import">
 	<link href="/static/bower_components/paper-dialog/paper-dialog.html" rel="import">
 	<link href="/static/bower_components/paper-item/paper-item.html" rel="import">
+	<link href="/static/bower_components/paper-input/paper-input.html" rel="import">
+	<link href="/static/bower_components/core-icons/core-icons.html" rel="import">
+	<link href="/static/bower_components/core-icons/communication-icons.html" rel="import">
 	<!-- My own custom polymer elements -->
 	<link href="/static/custom_components/center-paper-ripple-button/center-paper-ripple-button.html" rel="import">
 </head>
@@ -32,7 +35,7 @@
 	<div id="folders">
 			{% for item in folders %}
 				{% if 'dir' in item %}
-					<paper-item icon="folder" class='folderItem' label="{{item['dir']}}" type="folder" secret="{{item['secret']}}" items="{{item['secret']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="folder/{{item['dir']}}"></a> </paper-item>
+					<paper-item icon="folder" class='folderItem' label="{{item['dir']}}" type="folder" secret="{{item['secret']}}" items="{{item['secret']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="folder/{{item['dir']}}/"></a> <core-icon class="secretIcon" icon="communication:vpn-key"></core-icon><paper-input value="{{item['secret']}}" class="folderSecret" type="password" readonly="readonly"> </paper-input> </paper-item>
 				{% elif item['type'] == 'folder' %}
 					<paper-item icon="folder" class='folderItem' label="{{item['name']}}" type="folder" secret="{{item['secret']}}" state="{{item['state']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="{{item['name']}}"></a> </paper-item>
 				{% else %}

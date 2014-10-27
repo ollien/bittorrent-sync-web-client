@@ -15,6 +15,10 @@ paper-item.folderItem{
 	border-bottom: 1px #AAAAAA solid;
 }
 
+.secretIcon{
+	margin-left: 20px;
+	margin-right: 5px;
+}
 #addSecretModalBody > .popover{
 	width:300px;
 	max-width:300px;

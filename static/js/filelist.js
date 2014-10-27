@@ -26,6 +26,7 @@ function setupButtons(){
 	$('.folderSecret').focus(function(event){
 		event.stopPropagation();
 		$(this).attr("type","text");
+		$(this).select();
 	});
 	$('.folderSecret').blur(function(event){
 		$(this).attr("type","password");

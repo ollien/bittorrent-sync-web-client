@@ -12,22 +12,25 @@ function setupButtons(){
 	$('core-icon.secretIcon').click(function(event){
 		event.stopPropagation();
 		var input = $(this).parent().find("> .folderSecret");
-		$(input).animate({
-				width:'200px'
-		},
-		{
-				duration:100,
-				specialEasing:{
-					width:"linear"
-				}
-			});
-		$(input).focus();
+		if ($(input).width()==0) {
+			$(input).animate({
+					width:'200px'
+			},
+			{
+					duration:150,
+					specialEasing:{
+						width:"linear"
+					}
+				});
+			$(input).focus();
+		}
 		});
 	$('.folderSecret').focus(function(event){
 		event.stopPropagation();
 		$(this).attr("type","text");
 		$(this).select();
 	});
+
 	$('.folderSecret').blur(function(event){
 		$(this).attr("type","password");
 		if ($(this).width()>0){
@@ -35,7 +38,7 @@ function setupButtons(){
 					width:'0px'
 			},
 			{
-					duration:100,
+					duration:150,
 					specialEasing:{
 						width:"linear"
 					}

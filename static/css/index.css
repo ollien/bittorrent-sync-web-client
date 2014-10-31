@@ -15,7 +15,7 @@ paper-item.folderItem{
 	border-bottom: 1px #AAAAAA solid;
 }
 
-.secretIcon, .shareIcon{
+.secretIcon, .publicIcon{
 	margin-left: 20px;
 	margin-right: 5px;
 }

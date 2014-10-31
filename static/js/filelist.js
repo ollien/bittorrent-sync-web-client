@@ -173,26 +173,24 @@ function setupButtons(){
 		});
 		
 	});
-	$('.publicButton').click(function(event){
+	$('core-icon.publicIcon').click(function(event){
 		event.stopPropagation();
-		var item = $(this).parent().find("> a.folderpath")
-		var fullPath = createPath()+item.attr('name');
+		var item = $(this).parent().attr('label');
+		var fullPath = createPath()+item;
 		console.log(fullPath);
 		$.post('/makePublic',{'path':fullPath},function(data){
 			data = JSON.parse(data);
 			if (data['error']==0){
-				$('#publicURL').val(window.location.origin+data['url'])
-				$('#publicModal').modal('show');
+				$('#publicName').text(item);
+				$('#publicURL').val(window.location.origin+data['url']);
+				$('#publicModal')[0].toggle();
 			}
 			else{
 				console.log('Error making public.');
 			}
 		});
 	});
-	$('#donePublic').click(function(event){
-		event.stopPropagation();
-		$('#publicModal').modal('hide');
-	});
+	
 }
 function createPath(){
 	if (window.location.pathname.indexOf('/folder/') > -1)

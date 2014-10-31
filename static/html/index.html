@@ -43,7 +43,7 @@
 				{% elif item['type'] == 'folder' %}
 					<paper-item icon="folder" class='folderItem' label="{{item['name']}}" type="folder" secret="{{item['secret']}}" state="{{item['state']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="{{item['name']}}"></a> </paper-item>
 				{% else %}
-					<paper-item icon="drive-file" class='folderItem' label="{{item['name']}}" type="{{item['type']}}" secret="null" state="{{item['state']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="javascript:void(0)" name="{{item['name']}}" class="fileItem"></a> <core-icon class="shareIcon itemIcon" icon="social:share"></core-icon> <core-icon class="deleteIcon itemIcon" icon="delete"></core-icon></paper-item>
+					<paper-item icon="drive-file" class='folderItem' label="{{item['name']}}" type="{{item['type']}}" secret="null" state="{{item['state']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="javascript:void(0)" name="{{item['name']}}" class="fileItem"></a> <core-icon class="publicIcon itemIcon" icon="social:share"></core-icon> <core-icon class="deleteIcon itemIcon" icon="delete"></core-icon></paper-item>
 					
 				{% endif %}
 			{% else %}
@@ -77,22 +77,12 @@
 		<paper-button dismissive>Cancel</paper-button>
 		<paper-button id="confirmDelete" affirmative autofocus>Accept</paper-button>
 	</paper-dialog>
-	<div class="modal fade" id="publicModal" tabIndex="-1" role="dialog" aria-labelled="publicModal" aria-hdiden="true">
-		<div class="modal-dialog modal-sm">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h4 class="modal-title">File is public!</h4>
-				</div>
-				<div class="modal-body" id="publicModalBody">
-					<input id="publicURL" readonly="readonly"></input>
-				</div>
-				<div class="modal-footer">
-					<button id="donePublic" class="btn btn-primary">Done</button>
-				</div>
-			</div>
-		</div>
-	</div>
+	<paper-dialog id="publicModal" heading="File is now public!" transition="paper-dialog-transition-center">
+		<span id="publicName"></span> is now public!
+		<paper-input id="publicURL" readonly="readOnly"></paper-input>
+		<paper-button dismissive>Cancel</paper-button>
+		<paper-button affirmative autofocus>Accept</paper-button>
+	</paper-dialog>
 	
 </body>
 </html>

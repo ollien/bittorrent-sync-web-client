@@ -64,7 +64,10 @@ class Main(object):
 			elif create.lower() == 'true':
 				create = True
 		if os.path.exists(path) and os.path.isdir(path):
-			return 'true'
+			if os.access(path,os.R_OK) and os.access(path,os.W_OK):
+				return 'true'
+			else:
+				return 'notAllowed'
 		elif create and not os.path.exists(path):
 			check = os.path.abspath(os.path.join(path, os.pardir))
 			if (os.access(path,os.R_OK) and os.access(path,os.W_OK)) or (os.access(check,os.R_OK) and os.access(check,os.W_OK)):

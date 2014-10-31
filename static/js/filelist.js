@@ -46,100 +46,68 @@ function setupButtons(){
 		}
 	});
 	$('#addSecret').click(function(event){
-		$('#addSecretModal').modal('show');
+		$('#addSecretModal')[0].toggle();
+		$('#dirInput').val("");
+		$('#secretInput').val("");
+		setValid('#addSecretModal','#confirmAddSecret');
 	});
-	$('#secretInput').popover({'trigger':'manual'});
-	$('#dirInput').popover({'trigger':'manual'});
-	// $('#doneUpload').click(function(event)){
-	// 	$('#uploadModal').modal('hide');
-	// });
 	$('#confirmAddSecret').click(function(event){
+		// $('#dirInput')[0].setCustomValidity('Your mother was a hamster');
+		// $('#secretInput')[0].setCustomValidity('Your father smelled of elderberries');
+		var secretInp = $('#secretInput');
+		var dirInp = $('#dirInput');
+		if (secretInp.length > 0 && dirInp.length > 0){
+			if (!secretInp[0].checkValidity() && !dirInp[0].checkValidity()){
+				return;
+			}
+		}
 		var secret = $('#secretInput').val();
 		var dir = $('#dirInput').val();
-		if (dir.length!=0 && dir!='/'){
-			
-			var result; 
-			// alert(dir);
+		if (dir==='/'){
+			var inp = $('#dirInput');
+			if (inp.length > 0){
+				inp[0].setCustomValidity("The root directory cannot be chosen.")
+			}
+		}
+		else{
 			var checked = $('#createFolder').prop('checked');
 			$.get('/dirExists',{'path':dir,'create':checked},function(data){
+				console.log(data);
 				if (data=='true'){
-					result=true;
+					result = true;
 				}
 				else if (data=='notAllowed'){
 					result = -1;
 				}
 				else{
-					result=false;
+					result = false;
 				}
-				if (result===true && secret.length>0){
+				console.log(result);
+				if (result===true){
 					$.post('/sync',{'method':'add_folder','dir':dir,'secret':secret},function(data){
 						data = JSON.parse(data);
 						if (data['error']!=0){
 							var error=data['message'];
-							$('#secretInput').attr('data-content',error);
-							$('#secretInput').popover('show');
+							$('#secretInput')[0].setCustomValidity(error);
+							$('#confirmAddSecret').prop('disabled',true);
 						}
 						else{
-							$('#dirInput').val('');
-							$('#secretInput').val('');
-							$('#secretInput').popover('hide');
-							$('#dirInput').popover('hide');
-							$('#addSecretModal').modal('hide');
-							updateFolders();
+							$('#addSecretModal')[0].toggle();
 						}
 					});
 				}
-				else if (result===true && secret.length==0){
-					$.post('/sync',{'method':'add_folder','dir':dir},function(data){
-						data = JSON.parse(data);
-						if (data['error']!=0){
-							var error=data['message'];
-							$('#dirInput').attr('data-content',error);
-							$('#dirInput').popover('show');
-						}
-						else{
-							$('#dirInput').val('');
-							$('#secretInput').val('');
-							$('#secretInput').popover('hide');
-							$('#dirInput').popover('hide');
-							$('#addSecretModal').modal('hide');
-							updateFolders();
-						}
-					});
+				else if (result===-1){
+					$('#dirInput')[0].setCustomValidity("You don't have permission to write to this directory");
+					$('#confirmAddSecret').prop('disabled',true);
 				}
 				else if (result===false){
-					$('#dirInput').attr('data-content',"This directory does not exist. You can create it manually or check the box below.");
-					$('#dirInput').popover('show');
+					$('#dirInput')[0].setCustomValidity("This directory does not exist. You can create it by checking the below box.");
+					$('#confirmAddSecret').prop('disabled',true);
 				}
-				else{
-					$('#dirInput').attr('data-content',"You do not have write permission to this directory.");
-					$('#dirInput').popover('show');
-				}
-				
-			});
-			
-			
-		}
-		else if (dir=='/'){
-			$('#dirInput').attr('data-content',"You cannot choose / as your directory.");
-			$('#dirInput').popover('show');
+			})
 		}
 	});
-	$('#addSecretModal').keypress(function(event){
-		if (event.which==13){
-			$('#confirmAddSecret').click();
-		}
-	});
-	$('#addSecretModal').on('hide.bs.modal',function(event){
-		$('#secretInput').popover('hide');
-		$('#dirInput').popover('hide');
-	});
-	$('#dirInput').on('input',function(event){
-		$('#dirInput').popover('hide');
-	});
-	$('#secretInput').on('input',function(event){
-		$('#dirInput').popover('hide');
-	});
+	
 	$('#upload').change(function(event){
 		var fileList = $('#upload')[0].files
 		var path = createPath()+'/'+fileList[0].name
@@ -286,6 +254,34 @@ function getPing(){
 		async: false
 	});
 	return new Date().getTime() - time;
+}
+function setValid(s,button){
+	console.log(s,button);
+	if (s[0]!='#')
+		s='#'+s;
+	if (button[0]!='#')
+		button='#'+button;
+	var q = $(s);
+	if (q.length > 0){
+		var inputs = q.find('paper-input');
+		var valid = true;
+		for (var i=0; i<inputs.length; i++){
+			if (!inputs[i].checkValidity()){
+				inputs[i].setCustomValidity('');
+			}
+			// Check again to see if we still need to gray it out
+			if (!inputs[i].checkValidity()){
+				valid = false;
+			}
+		}
+		if (!valid){
+			$(button).prop("disabled",true);
+		}
+		else{
+			$(button).prop("disabled",false);
+		}
+		
+	}
 }
 //stolen from stackoverflow, allows me to repeat strings.
 String.prototype.repeat = function(num)

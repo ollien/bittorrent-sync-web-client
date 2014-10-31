@@ -22,9 +22,14 @@ paper-item.folderItem{
 .folderSecret{
 	width:0px;
 }
-#addSecretModalBody > .popover{
-	width:300px;
-	max-width:300px;
+#createFolder { 
+	margin-right: 10px;
+}
+paper-button[autofocus] {
+   color: #4285f4;
+}
+.dialogInput{
+	padding:0em;
 }
 .error{
 	transition: all .08s ease-in;
@@ -40,4 +45,10 @@ core-toolbar#toolbar{
 }
 #addSecret::shadow #ripple{
 	pointer-events:none;
+}
+paper-input > div.errorText{
+	
+}
+#createFolder {
+	padding-top: 50px;;
 }

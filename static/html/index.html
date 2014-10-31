@@ -13,13 +13,17 @@
 	<!-- Project Polymer elements -->
 	<link href="/static/bower_components/font-roboto/roboto.html" rel="import">
 	<link href="/static/bower_components/core-toolbar/core-toolbar.html" rel="import">
-	<link href="/static/bower_components/paper-dialog/paper-dialog.html" rel="import">
 	<link href="/static/bower_components/paper-item/paper-item.html" rel="import">
 	<link href="/static/bower_components/paper-input/paper-input.html" rel="import">
 	<link href="/static/bower_components/core-icons/core-icons.html" rel="import">
 	<link href="/static/bower_components/core-icons/communication-icons.html" rel="import">
+	<link href="/static/bower_components/core-icons/communication-icons.html" rel="import">
+	<link href="/static/bower_components/paper-dialog/paper-dialog.html" rel="import">
+	<link href="/static/bower_components/paper-dialog/paper-dialog-transition.html" rel="import">
+	<link href="/static/bower_components/paper-button/paper-button.html" rel="import">
 	<!-- My own custom polymer elements -->
 	<link href="/static/custom_components/center-paper-ripple-button/center-paper-ripple-button.html" rel="import">
+	
 </head>
 <body fullbleed vertical layout unresolved>
 		<core-toolbar id="toolbar">
@@ -46,28 +50,14 @@
 				<span id="noFolders">There are no files or folders to show.</span>
 			{% endfor %}
 	</div>
-	<div class="modal fade bs-example-modal-sm" id="addSecretModal" tabindex="-1" role="dialog" aria-labelledby="addSecretModal" aria-hidden="true">
-		<div class="modal-dialog modal-sm">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h4 class="modal-title">Add a secret</h4>
-				</div>
-				<div id="addSecretModalBody" class="modal-body">
-					<input id="dirInput" type="text" class="form-control" placeholder="Directory" data-toggle="popover" data-placement="right" data-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget tincidunt metus, at tincidunt odio. Aliquam sed elit ut orci iaculis commodo. In pellentesque suscipit dignissim." trigger="manual" />
-					<br / >
-					<input id="secretInput" type="text" class="form-control" placeholder="Secret (optional)" data-toggle="popover" data-placement="right" data-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget tincidunt metus, at tincidunt odio. Aliquam sed elit ut orci iaculis commodo. In pellentesque suscipit dignissim." trigger="manual"/>
-					<br />
-					<input type="checkbox" id="createFolder">Create the directory if it does not exist.</input>
-				</div>
-				<div class="modal-footer">
-					<button class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<button id="confirmAddSecret" class="btn btn-primary">Add</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	
+	<paper-dialog id="addSecretModal" closeSelector="[dismissive]" heading="Add secret" transition="paper-dialog-transition-center">
+		 <paper-input class='dialogInput' id="dirInput" onInput="setValid(this.parentNode.id,confirmAddSecret.id)" floatinglabel required label="Directory" layout vertical class></paper-input>
+		 <paper-input class='dialogInput' id="secretInput" onInput="setValid(this.parentNode.id,confirmAddSecret.id)" floatinglabel required label="Secret" layout vertical class></paper-input>
+		 <input type="checkbox" id="createFolder">Create this folder if it doesn't exist.</input>
+		<paper-button dismissive>Cancel</paper-button>
+		<paper-button id="confirmAddSecret" affirmative autofocus>Accept</paper-button>
+	</paper-dialog>
+		
 	<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="dupeUploadModal" aria-hidden="true">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content">

@@ -150,13 +150,11 @@ function setupButtons(){
 		$('#uploadModal').modal('show');
 	});
 	
-	$('.deleteButton').click(function(event){
+	$('core-icon.deleteIcon').click(function(event){
 		event.stopPropagation();
-		
-		var item = $(this).parent().find("> a.folderPath");
-		
-		$('#deleteFilename').text(item.text());
-		$('#deleteModal').modal('show');
+		var item = $(this).parent().attr('label');
+		$('#deleteFilename').text(item);
+		$('#deleteModal')[0].toggle();
 		
 	});
 	$('#confirmDelete').click(function(event){
@@ -167,7 +165,7 @@ function setupButtons(){
 			data = JSON.parse(data);
 			if (data['error']==0){
 				updateFolders();
-				$('#deleteModal').modal('hide');
+				$('#deleteModal')[0].toggle();
 			}
 			else{
 				console.log("Error deleting.")

@@ -17,7 +17,7 @@
 	<link href="/static/bower_components/paper-input/paper-input.html" rel="import">
 	<link href="/static/bower_components/core-icons/core-icons.html" rel="import">
 	<link href="/static/bower_components/core-icons/communication-icons.html" rel="import">
-	<link href="/static/bower_components/core-icons/communication-icons.html" rel="import">
+	<link href="/static/bower_components/core-icons/social-icons.html" rel="import">
 	<link href="/static/bower_components/paper-dialog/paper-dialog.html" rel="import">
 	<link href="/static/bower_components/paper-dialog/paper-dialog-transition.html" rel="import">
 	<link href="/static/bower_components/paper-button/paper-button.html" rel="import">
@@ -39,11 +39,11 @@
 	<div id="folders">
 			{% for item in folders %}
 				{% if 'dir' in item %}
-					<paper-item icon="folder" class='folderItem' label="{{item['dir']}}" type="folder" secret="{{item['secret']}}" items="{{item['secret']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="folder/{{item['dir']}}/"></a> <core-icon class="secretIcon" icon="communication:vpn-key"></core-icon><paper-input value="{{item['secret']}}" class="folderSecret" type="password" readonly="readonly"> </paper-input> </paper-item>
+					<paper-item icon="folder" class='folderItem' label="{{item['dir']}}" type="folder" secret="{{item['secret']}}" items="{{item['secret']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="folder/{{item['dir']}}/"></a> <core-icon class="secretIcon itemIcon" icon="communication:vpn-key"></core-icon><paper-input value="{{item['secret']}}" class="folderSecret" type="password" readonly="readonly"> </paper-input> </paper-item>
 				{% elif item['type'] == 'folder' %}
 					<paper-item icon="folder" class='folderItem' label="{{item['name']}}" type="folder" secret="{{item['secret']}}" state="{{item['state']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="{{item['name']}}"></a> </paper-item>
 				{% else %}
-					<paper-item icon="drive-file" class='folderItem' label="{{item['name']}}" type="{{item['type']}}" secret="null" state="{{item['state']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="javascript:void(0)" name="{{item['name']}}" class="fileItem"></a></paper-item>
+					<paper-item icon="drive-file" class='folderItem' label="{{item['name']}}" type="{{item['type']}}" secret="null" state="{{item['state']}}" center horizontal layout> <paper-shadow z="1"></paper-shadow> <a href="javascript:void(0)" name="{{item['name']}}" class="fileItem"></a> <core-icon class="shareIcon itemIcon" icon="social:share"></core-icon> <core-icon class="deleteIcon itemIcon" icon="delete"></core-icon></paper-item>
 					
 				{% endif %}
 			{% else %}
@@ -72,24 +72,11 @@
 			</div>
 		</div>
 	</div>
-	
-	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelled="deleteModal" aria-hidden="true">
-		<div class="modal-dialog modal-sm">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h4 class="modal-title">Delete file?</h4>
-				</div>
-				<div class="modal-body" id="deleteModalBody">
-					Are you sure you want to delete <span id="deleteFilename"></span>?
-				</div>
-				<div class="modal-footer">
-					<button class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<button id="confirmDelete" class="btn btn-danger">Delete</button>
-				</div>
-			</div>
-		</div>
-	</div>
+	<paper-dialog id="deleteModal" closeSelector="[dismissive]" heading="Delete file" transition="paper-dialog-transition-center">
+		Are you sure you want to delete <span id="deleteFilename"></span>?
+		<paper-button dismissive>Cancel</paper-button>
+		<paper-button id="confirmDelete" affirmative autofocus>Accept</paper-button>
+	</paper-dialog>
 	<div class="modal fade" id="publicModal" tabIndex="-1" role="dialog" aria-labelled="publicModal" aria-hdiden="true">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content">

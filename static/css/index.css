@@ -15,7 +15,7 @@ paper-item.folderItem{
 	border-bottom: 1px #AAAAAA solid;
 }
 
-.secretIcon{
+.secretIcon, .shareIcon{
 	margin-left: 20px;
 	margin-right: 5px;
 }
@@ -51,4 +51,7 @@ paper-input > div.errorText{
 }
 #createFolder {
 	padding-top: 50px;;
+}
+core-icon.itemIcon:hover{
+	color:#2780ff;
 }

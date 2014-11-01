@@ -21,6 +21,7 @@
 	<link href="/static/bower_components/paper-dialog/paper-dialog.html" rel="import">
 	<link href="/static/bower_components/paper-dialog/paper-dialog-transition.html" rel="import">
 	<link href="/static/bower_components/paper-button/paper-button.html" rel="import">
+	<link href="/static/bower_components/paper-toast/paper-toast.html" rel="import">
 	<!-- My own custom polymer elements -->
 	<link href="/static/custom_components/center-paper-ripple-button/center-paper-ripple-button.html" rel="import">
 	
@@ -48,6 +49,8 @@
 				<span id="noFolders">There are no files or folders to show.</span>
 			{% endfor %}
 	</div>
+	
+	<!-- Polymer Dialogs -->
 	<paper-dialog id="addSecretModal" closeSelector="[dismissive]" heading="Add secret" transition="paper-dialog-transition-center">
 		 <paper-input class='dialogInput' id="dirInput" onInput="setValid(this.parentNode.id,confirmAddSecret.id)" floatinglabel required label="Directory" layout vertical class></paper-input>
 		 <paper-input class='dialogInput' id="secretInput" onInput="setValid(this.parentNode.id,confirmAddSecret.id)" floatinglabel required label="Secret" layout vertical class></paper-input>
@@ -81,7 +84,11 @@
 		<paper-button dismissive>Cancel</paper-button>
 		<paper-button affirmative autofocus>Accept</paper-button>
 	</paper-dialog>
+	<!-- /Polymer Dialogs -->
 	
+	<!-- Polymer Toasts -->
+	<paper-toast id="fileDeletedToast" text="File deleted"></paper-toast>
+	<!-- /Polymer Toasts -->
 </body>
 </html>
 	

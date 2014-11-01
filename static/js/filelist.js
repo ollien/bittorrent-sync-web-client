@@ -163,9 +163,11 @@ function setupButtons(){
 		var fullPath = createPath()+"/"+item;
 		$.post('/delete',{'path':fullPath},function(data){
 			data = JSON.parse(data);
-			if (data['error']==0){
-				updateFolders();
+			if (data['error']==0){				
 				$('#deleteModal')[0].toggle();
+				$('#fileDeletedToast').attr("text",item+" has been deleted.");
+				$('#fileDeletedToast')[0].show();
+				updateFolders();
 			}
 			else{
 				console.log("Error deleting.")

@@ -292,7 +292,7 @@ $(document).ready(function(){
 		$('#addSecret').hide();
 	}
 	else{
-		$('#uploadButton').hide();
+		$('#uploadFile').hide();
 	}
 	setupButtons();
 	hideDeleted();

@@ -1,4 +1,3 @@
-
 div#folders{
 	margin-top: 1.5%;
 	margin-left: 5%;
@@ -7,6 +6,7 @@ div#folders{
 }
 body{
 	background-color: #e7e7e7;
+	font-family: 'arial', sans-serif;
 }
 
 paper-item.folderItem{

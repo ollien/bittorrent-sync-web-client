@@ -49,6 +49,9 @@ paper-spinner#uploadSpinner{
 }
 /* Project polymer stuff */
 core-toolbar#toolbar{
+	height:64px;
+	min-height: 64px;
+	max-height: 65px;
 	background-color:#5badff;
 }
 #addSecret::shadow #ripple{

@@ -18,6 +18,7 @@
 	<link href="/static/bower_components/core-icons/core-icons.html" rel="import">
 	<link href="/static/bower_components/core-icons/communication-icons.html" rel="import">
 	<link href="/static/bower_components/core-icons/social-icons.html" rel="import">
+	<link href="/static/bower_components/core-icons/notification-icons.html" rel="import">
 	<link href="/static/bower_components/paper-dialog/paper-dialog.html" rel="import">
 	<link href="/static/bower_components/paper-dialog/paper-dialog-transition.html" rel="import">
 	<link href="/static/bower_components/paper-button/paper-button.html" rel="import">
@@ -25,12 +26,13 @@
 	<link href="/static/bower_components/paper-spinner/paper-spinner.html" rel="import">
 	<!-- My own custom polymer elements -->
 	<link href="/static/custom_components/center-paper-ripple-button/center-paper-ripple-button.html" rel="import">
+	<link href="/static/custom_components/custom-icons/custom-icons.html" rel="import">
 	
 </head>
 <body fullbleed vertical layout unresolved>
 		<core-toolbar id="toolbar">
 			<paper-shadow z="2"></paper-shadow>
-			<center-paper-ripple-button icon="menu" on-tap="{{iconPressed}}" recenteringTouch=true></center-paper-ripple-button>
+			<center-paper-ripple-button id="homeButton" onclick="window.location.href = '/'" icon="custom:rotated-sync" on-tap="{{iconPressed}}" recenteringTouch=true></center-paper-ripple-button>
 			<div id="toolbarTitle" flex>Bit Torrent Sync Web</div>
 			<center-paper-ripple-button id="addSecret" icon="add"></center-paper-ripple-button>
 			<center-paper-ripple-button id="uploadFile" icon="file-upload"></center-paper-ripple-button>

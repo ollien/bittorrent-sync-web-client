@@ -112,11 +112,14 @@ function setupButtons(){
 		var fileList = $('#upload')[0].files
 		var path = createPath()+'/'+fileList[0].name
 		if (fileList.length==1){
+			$('#uploadModal').attr('autoCloseDisabled',true);
+			$('#cancelUpload').prop('disabled',true);
 			$.get('/file_exists',{'path':path},function(data){
-				if (data=='false'){	
-					$('#uploadStatus').text("Uploading");
-					uploading = true;
-					startUploadingDots();
+				if (data=='false'){
+					$('#uploadStatus').removeClass('error');
+					$('#uploadStatus').text('');
+					$('#uploadSpinner').show();
+					$('#uploadSpinner').attr('active','true');
 					//JSON likes to not handle files correctly, so we use FormData
 					data = new FormData()
 					data.append('f',fileList[0]);
@@ -130,24 +133,31 @@ function setupButtons(){
 						processData:false,
 						contentType:false,
 						success:function(data){
-							$('#uploadStatus').text("Done.");
-							stopUploadingDots();
-							$('#uploadModal').modal('hide');
+							$('#cancelUpload').prop('disabled',false);
+							$('#uploadModal').attr('autoCloseDisabled',false);
+							$('#uploadModal')[0].toggle();
+							$('#uploadSpinner').attr('active','false');
+							$('#uploadSpinner').hide();
 							updateFolders();
+							//Quick hack to reset the upload field,stolen from stackoverflow
+							$('#upload').wrap('<form>').parent('form').trigger('reset');
+							$('#upload').unwrap();
 						}
 					});
 				}
 				else{
+					if ($('#uploadStatus').hasClass('error')){
+						$('#uploadStatus').removeClass('error');
+					}
 					$('#uploadStatus').text("This file already exists. Either rename the file you are uploading or choose another file.");
 					$('#uploadStatus').addClass('error');
-					
 				}
 			});
 		}
 		
 	});
-	$('#uploadButton').click(function(event){
-		$('#uploadModal').modal('show');
+	$('#uploadFile').click(function(event){
+		$('#uploadModal')[0].toggle();
 	});
 	
 	$('core-icon.deleteIcon').click(function(event){
@@ -206,20 +216,6 @@ function hideDeleted(){
 			$(items[i]).hide();
 		}
 	}
-}
-function startUploadingDots(count){
-	if (uploading){
-		if (count===undefined)
-			count = 0;
-		if (count==4)
-			count = -1; //count +1 will make this zero
-		$('#uploadStatus').text("Uploading"+".".repeat(count));
-		setTimeout(function(){startUploadingDots(count+1)}, 500);
-	}
-}
-function stopUploadingDots(){
-	uploading=false;
-	$('#uploadStatus').text();
 }
 function secretInPage(){
 	var items = $('.folderItem');

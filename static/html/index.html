@@ -22,6 +22,7 @@
 	<link href="/static/bower_components/paper-dialog/paper-dialog-transition.html" rel="import">
 	<link href="/static/bower_components/paper-button/paper-button.html" rel="import">
 	<link href="/static/bower_components/paper-toast/paper-toast.html" rel="import">
+	<link href="/static/bower_components/paper-spinner/paper-spinner.html" rel="import">
 	<!-- My own custom polymer elements -->
 	<link href="/static/custom_components/center-paper-ripple-button/center-paper-ripple-button.html" rel="import">
 	
@@ -56,23 +57,15 @@
 		 <paper-input class='dialogInput' id="secretInput" onInput="setValid(this.parentNode.id,confirmAddSecret.id)" floatinglabel required label="Secret" layout vertical class></paper-input>
 		 <input type="checkbox" id="createFolder">Create this folder if it doesn't exist.</input>
 		<paper-button dismissive>Cancel</paper-button>
-		<paper-button id="confirmAddSecret" affirmative autofocus>Accept</paper-button>
+		<paper-button id="confirmAddSecret" affirmative autofocus>Confirm</paper-button>
 	</paper-dialog>
-		
-	<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="dupeUploadModal" aria-hidden="true">
-		<div class="modal-dialog modal-sm">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h4 class="modal-title">Upload a file</h4>
-				</div>
-				<div id="dupeUploadModal" class="modal-body">
-					<input type="file" id='upload'/>
-					<span id="uploadStatus"></span>
-				</div>
-			</div>
-		</div>
-	</div>
+	<paper-dialog id="uploadModal" closeSelector="[dismissive]" heading="Upload file" transition="paper-dialog-transition-center">
+		<input type="file" id="upload"/>
+		<!-- This is a polymer labs element, might be a bit buggy! -->
+		<paper-spinner id="uploadSpinner"></paper-spinner>
+		<span id="uploadStatus"></span>
+		<paper-button id="cancelUpload" dismissive>Cancel</paper-button>
+	</paper-dialog>
 	<paper-dialog id="deleteModal" closeSelector="[dismissive]" heading="Delete file" transition="paper-dialog-transition-center">
 		Are you sure you want to delete <span id="deleteFilename"></span>?
 		<paper-button dismissive>Cancel</paper-button>
@@ -82,7 +75,7 @@
 		<span id="publicName"></span> is now public!
 		<paper-input id="publicURL" readonly="readOnly"></paper-input>
 		<paper-button dismissive>Cancel</paper-button>
-		<paper-button affirmative autofocus>Accept</paper-button>
+		<paper-button affirmative autofocus>Done</paper-button>
 	</paper-dialog>
 	<!-- /Polymer Dialogs -->
 	

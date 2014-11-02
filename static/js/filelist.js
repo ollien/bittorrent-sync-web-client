@@ -110,7 +110,8 @@ function setupButtons(){
 	
 	$('#upload').change(function(event){
 		var fileList = $('#upload')[0].files
-		var path = createPath()+'/'+fileList[0].name
+		var path = createPath()+fileList[0].name
+		console.log(path)
 		if (fileList.length==1){
 			$('#uploadModal').attr('autoCloseDisabled',true);
 			$('#cancelUpload').prop('disabled',true);
@@ -122,10 +123,8 @@ function setupButtons(){
 					$('#uploadSpinner').attr('active','true');
 					//JSON likes to not handle files correctly, so we use FormData
 					data = new FormData()
-					data.append('f',fileList[0]);
-					var path = createPath()+'/'+fileList[0].name;
 					data.append('path',path);
-					// var data = {'f':$('#upload')[0].files, 'path':'null for now'}
+					data.append('f',fileList[0]);
 					$.ajax({
 						url:'/upload',
 						type:'POST',

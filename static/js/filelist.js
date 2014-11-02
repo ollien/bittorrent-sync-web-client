@@ -111,6 +111,7 @@ function setupButtons(){
 	$('#upload').change(function(event){
 		var fileList = $('#upload')[0].files
 		var path = createPath()+fileList[0].name
+		var fileName = fileList[0].name
 		console.log(path)
 		if (fileList.length==1){
 			$('#uploadModal').attr('autoCloseDisabled',true);
@@ -141,6 +142,10 @@ function setupButtons(){
 							//Quick hack to reset the upload field,stolen from stackoverflow
 							$('#upload').wrap('<form>').parent('form').trigger('reset');
 							$('#upload').unwrap();
+							var p = createPath();
+							p = p.replace(/\/+/,'/');
+							$('#fileUploadedToast').attr("text",fileName+" has successfully uploaded to "+p+".");
+							$('#fileUploadedToast')[0].show();
 						}
 					});
 				}

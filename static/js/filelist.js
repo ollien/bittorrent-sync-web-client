@@ -281,7 +281,7 @@ function setValid(s,button){
 		
 	}
 }
-//stolen from stackoverflow, allows me to repeat strings.
+//stolen from stackoverflow (http://stackoverflow.com/questions/202605/repeat-string-javascript) by Peter Bailey, allows me to repeat strings.
 String.prototype.repeat = function(num)
 {
 	return new Array( num + 1 ).join(this);

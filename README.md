@@ -35,3 +35,4 @@ server {
 	}
 }
 ```
+![alt tag](https://raw.githubusercontent.com/ollien/BitTorrent-Sync-Web-Client/master/README_SCREENSHOT.png)

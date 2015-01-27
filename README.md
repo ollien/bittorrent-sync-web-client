@@ -1,7 +1,7 @@
 BitTorrent Sync Web Client
 ==========================
 
-A web client for BitTorrent Sync.
+A web client for BitTorrent Sync, using cherrypy and Project Polymer.
 
 I made this so I could finally use Btsync as opposed to Dropbox, since the major dealbreaker was that Btsync didn't have a web client.
 

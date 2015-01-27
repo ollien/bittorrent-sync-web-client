@@ -3,11 +3,10 @@ BitTorrent Sync Web Client
 
 A web client for BitTorrent Sync, using cherrypy and Project Polymer.
 
-I made this so I could finally use Btsync as opposed to Dropbox, since the major dealbreaker was that Btsync didn't have a web client.
+This was made so in order to switch from BitTorrent Sync from Dropbox, since the major dealbreaker was that BitTorrent Sync didn't have a web client.
 
-I run it with uwsgi and nginx, but it should work without them. 
+It can be run using uwsgi and nginx, using the below config for nginx, but it can be run without them.
 
-This is my nginx config, which is pretty essential in order for this to work with nginx.
 
 ```
 upstream btsyncWeb{

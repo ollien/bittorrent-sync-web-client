@@ -11,114 +11,110 @@ from shutil import move
 
 
 staticRoot = os.path.dirname(os.path.abspath(os.getcwd()))
-staticPath = os.path.join(os.path.dirname(os.path.abspath(os.getcwd())),'static/')
+staticPath = os.path.join(os.path.dirname(os.path.abspath(os.getcwd())), 'static/')
 templates = jinja2.Environment(loader=jinja2.FileSystemLoader(staticPath+'html'))
 syncIp = "127.0.0.1:8888"
 syncAddr = "http://"+syncIp+"/api"
 basePath = "/mnt/bakery" # A specific string that is needed to be stripped from my file path
 publicPath = "public/" #The location of all public symlinks
 class FileFieldStorage(cgi.FieldStorage):
-	def make_file(self,binary=None):
+	def make_file(self, binary=None):
 		return tempfile.NamedTemporaryFile(delete=True)
 def noBodyProcess():
 	cherrypy.request.process_request_body = False
 
-cherrypy.tools.noBodyProcess = cherrypy.Tool('before_request_body', noBodyProcess)
+cherrypy.tools.noBodyProcess = cherrypy.Tool('before_request_body',  noBodyProcess)
 class Main(object):
 	@cherrypy.expose
 	def index(self):
 		return self.folder();
-		# indexTemplate = templates.get_template('index.html')
-		# return staticPath+'html'+' | '+staticRoot
-		# folders = self.btSync(method='get_folders')
-		# return indexTemplate.render(folders=json.loads(folders))
+
 	@cherrypy.expose
-	def folder(self,*args):
+	def folder(self, *args):
 		indexTemplate = templates.get_template('index.html')
 		response = None
-		if len(args)==0:
+		if len(args) == 0:
 			path=''
 			response = self.btSync(method='get_folders')
 			response = json.loads(response)
-			response = sorted(response, key=lambda k: k['dir'])
+			response = sorted(response,  key=lambda k: k['dir'])
 		else:
 			files = None
 			path = '/'.join(args)
-			if path[0]!='/':
+			if path[0] != '/':
 				path = '/'+path
 			secrets = json.loads(self.btSync(method='get_folders'))
 			secret = None
 			for item in secrets:
 				if item['dir'] in path:
 					secret = item['secret']
-					path=path.replace(item['dir'],"")
-			response = self.btSync(method='get_files',secret=secret,path=path)
+					path=path.replace(item['dir'], "")
+			response = self.btSync(method='get_files', secret=secret, path=path)
 			response = json.loads(response)	
-			response = sorted(response, key=lambda k: k['name'])
+			response = sorted(response,  key=lambda k: k['name'])
 		return indexTemplate.render(folders=response)
+
 	@cherrypy.expose
-	def dirExists(self,path,create=False):
-		if type(create)!=bool:
+	def dirExists(self, path, create=False):
+		if type(create) != bool:
 			if create.lower() == 'false':
 				create = False
 			elif create.lower() == 'true':
 				create = True
 		if os.path.exists(path) and os.path.isdir(path):
-			if os.access(path,os.R_OK) and os.access(path,os.W_OK):
+			if os.access(path, os.R_OK) and os.access(path, os.W_OK):
 				return 'true'
 			else:
 				return 'notAllowed'
+
 		elif create and not os.path.exists(path):
-			check = os.path.abspath(os.path.join(path, os.pardir))
-			if (os.access(path,os.R_OK) and os.access(path,os.W_OK)) or (os.access(check,os.R_OK) and os.access(check,os.W_OK)):
+			check = os.path.abspath(os.path.join(path,  os.pardir))
+			if (os.access(path, os.R_OK) and os.access(path, os.W_OK)) or (os.access(check, os.R_OK) and os.access(check, os.W_OK)):
 				os.makedirs(path)
 				return 'true'
 			else:
 				return 'notAllowed'
 		else:
 			return 'false'
+
 	@cherrypy.expose
 	def hello(self):
 		return "hello world"
+
 	@cherrypy.expose(['sync'])
-	#BitTorrentSync API, pass in variables for the methods, eg method=get_folders and secret=secret
-	def btSync(self,**kwargs):
-		r = requests.get(syncAddr,params=kwargs)
+	#BitTorrentSync API,  pass in variables for the methods,  eg method=get_folders and secret=secret
+	def btSync(self, **kwargs):
+		r = requests.get(syncAddr, params=kwargs)
 		return r.text
 	@cherrypy.expose
-	def getFile(self,*args):
+	def getFile(self, *args):
 		try:
 			path = '/'.join(args)
 			#A fix to start at the root of the drive.
-			if path[0]!='/':
+			if path[0] != '/':
 				path = '/'+path
 			if self.pathInSync(path):
-					# return cherrypy.lib.static.serve_file(path,"application/x-download",os.path.basename(path))
-					# cherrypy.response.headers.clear()
-					# cherrypy.response.headers['X-Sendfile'] = os.path.basename(path)
-					# cherrypy.response.status = 200
-					p = path.replace(basePath,"")
+					p = path.replace(basePath, "")
 					cherrypy.response.headers.update({
-					  'X-Accel-Redirect'    : '/download/{0}'.format(p),
-					  'Content-Disposition' : 'attachment; filename={0}'.format(os.path.basename(path)),
+					  'X-Accel-Redirect'    : '/download/{0}'.format(p), 
+					  'Content-Disposition' : 'attachment; filename={0}'.format(os.path.basename(path)), 
 					  'Content-Type'        : 'application/octet-stream'
 					})
-					# return "goign"
-				# f = file(path)
-				# cherrypy.response.headers['Content-Type'] = getType(path)[0]
-				# return f
+
 			else:
 				raise cherrypy.HTTPError(403)
-		except IOError,e:
+		except IOError, e:
 			return json.dumps({'Error':"IO Error. "+str(e)})
-	def pathInSync(self,path):
+
+	def pathInSync(self, path):
 		result = json.loads(self.btSync(method='get_folders'))
 		folders = [item['dir'] for item in result]
 		for item in folders:
 			if item in path:
 				return True
 		return False
-	def pathExists(self,path,removeFileName=True):
+
+	def pathExists(self, path, removeFileName=True):
 		if removeFileName:
 			q = path.split('/')
 			del q[len(q)-1]	
@@ -126,111 +122,124 @@ class Main(object):
 		if self.dirExists(path) or (os.path.exists() and os.path.isfile(path)):
 			return True
 		return False
+
 	@cherrypy.expose
-	def manualListDir(self,path):
+	def manualListDir(self, path):
 		indexTemplate = templates.get_template('index.html')
 		if self.pathInSync(path):
 			folders = os.listdir(path)
 			return indexTemplate.render(folders=None)
+
 	@cherrypy.expose
 	@cherrypy.tools.noBodyProcess()
-	def upload(self,f=None,path=None):
-		# f.seek(0,0)
+	def upload(self, f=None, path=None):
+		# f.seek(0, 0)
 		h = {}
 		for key in cherrypy.request.headers:
 			h[key.lower()] = cherrypy.request.headers[key]
-		formFields = FileFieldStorage(fp=cherrypy.request.rfile,headers=h,environ={'REQUEST_METHOD':'POST'},keep_blank_values=True)
+
+		formFields = FileFieldStorage(fp=cherrypy.request.rfile, headers=h, environ={'REQUEST_METHOD':'POST'}, keep_blank_values=True)
 		if 'f' in formFields and 'path' in formFields:
 			f = formFields['f']
 			path = formFields.getvalue('path')
-			search = re.search('------WebKitFormBoundary.{16}--\Z',path)
+			search = re.search('------WebKitFormBoundary.{16}--\Z', path)
 			if search != None:
-				path = path.replace(search.group(),'')
+				path = path.replace(search.group(), '')
 			path = path.rstrip()
 			if self.pathInSync(path) and self.pathExists(path):
-				if hasattr(f.file,'name'):
-					move(f.file.name,path)
-					os.chmod(path,0776)
+				if hasattr(f.file, 'name'):
+					move(f.file.name, path)
+					os.chmod(path, 0776)
 					# os.remove(f.file.name)
 					return 'moved.'
 			else:
-				raise cherrypy.HTTPError(400,message="path is not valid")
+				raise cherrypy.HTTPError(400, message="path is not valid")
 		elif 'f' not in formFields:
-			raise cherrypy.HTTPError(400,message="f was not found in your request")
+			raise cherrypy.HTTPError(400, message="f was not found in your request")
+
 		elif 'path' not in formFields:
-			raise cherrypy.HTTPError(400,message="path was not found in your request")
+			raise cherrypy.HTTPError(400, message="path was not found in your request")
+
 		else:
-			raise cherrypy.HTTPError(400,message="unknown error with upload")
+			raise cherrypy.HTTPError(400, message="unknown error with upload")
+
 	@cherrypy.expose
-	def 	file_exists(self,path):
+	def file_exists(self, path):
 		if os.path.exists(path):
 			return 'true'
 		return 'false'
+
 	@cherrypy.expose
-	def find_secret(self,path):
+	def find_secret(self, path):
 		secrets = json.loads(self.btSync(method='get_folders'))
 		for item in secrets:
 			if item['dir'] in path:
 				return item['secret']
+
 	@cherrypy.expose
-	def delete(self,path):
+	def delete(self, path):
 		if self.pathInSync(path):
 			os.remove(path)
 			return json.dumps({"error":0})
 		return json.dumps({"error":1})
-	def fileInPublic(self,path):
-		p = os.path.join(basePath,publicPath)
+
+	def fileInPublic(self, path):
+		p = os.path.join(basePath, publicPath)
 		if p in path:
 			return True
 		else:
 			return False
+
 	@cherrypy.expose
-	def public(self,f):
-		path = os.path.join(basePath,publicPath,f)
+	def public(self, f):
+		path = os.path.join(basePath, publicPath, f)
 		if self.fileInPublic(path):
 			try:
 				os.stat(path)
 			except OSError:
 				return "File does not exist."
 			cherrypy.response.headers.update({
-			  'X-Accel-Redirect'    : '/download/'+os.path.join(publicPath,f),
-			  'Content-Disposition' : 'attachment; filename='+os.path.basename(os.readlink(path)),
+			  'X-Accel-Redirect'    : '/download/'+os.path.join(publicPath, f), 
+			  'Content-Disposition' : 'attachment; filename='+os.path.basename(os.readlink(path)), 
 			  'Content-Type'        : 'application/octet-stream'
 			})		
 			# return "boom goes the dynamite!"
-		else: #This shoudl never actually happen, but it's just a safeguard.
+		else: #This shoudl never actually happen,  but it's just a safeguard.
 			return "File is not shared publicly"
+
 	@cherrypy.expose
-	def makePublic(self,path):
+	def makePublic(self, path):
 		if self.pathInSync(path):
 			result = self.checkForPublicDupe(path)
-			if result!=None:
-				return json.dumps({"error":0,"url":'/public/'+result})
+			if result != None:
+				return json.dumps({"error":0, "url":'/public/'+result})
 			else:
 				uid = uuid.uuid4().hex
-				# p = os.path.join(basePath,publicPath,'1234')
-				os.symlink(path,os.path.join(basePath,publicPath,uid))
-				return json.dumps({"error":0,"url":'/public/'+uid})
+				# p = os.path.join(basePath, publicPath, '1234')
+				os.symlink(path, os.path.join(basePath, publicPath, uid))
+				return json.dumps({"error":0, "url":'/public/'+uid})
 		return json.dumps({"error":1})
-	def checkForPublicDupe(self,path):
-		p = os.path.join(basePath,publicPath)
+
+	def checkForPublicDupe(self, path):
+		p = os.path.join(basePath, publicPath)
 		d = os.listdir(p)
 		for item in d:
-			if os.readlink(os.path.join(basePath,publicPath,item))==path:
+			if os.readlink(os.path.join(basePath, publicPath, item)) == path:
 				return item
 		return None
+
 config={}				
 # config = {
 #     '/':{
-#         'tools.staticdir.root':staticRoot,
-#     },
+#         'tools.staticdir.root':staticRoot, 
+#     }, 
 #     '/static':{
-#         'tools.staticdir.on':True,
+#         'tools.staticdir.on':True, 
 #         'tools.staticdir.dir':'./static/'
 #     }
 # }
-application = cherrypy.tree.mount(Main(),'/',config=config)
-if __name__=='__main__':
+application = cherrypy.tree.mount(Main(), '/', config=config)
+if __name__ == '__main__':
 	cherrypy.engine.start()
 	cherrypy.engine.block()
 

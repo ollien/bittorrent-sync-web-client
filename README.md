@@ -1,6 +1,8 @@
 BitTorrent Sync Web Client
 ==========================
 
+**This was written for an old version of the BitTorrent Sync API, and is not presently maintained. You have been warned.**
+
 A web client for BitTorrent Sync, using cherrypy and Project Polymer.
 
 This can allow one to switch to BitTorrent Sync from Dropbox, since a major disadvantage to BitTorrentSync is that BitTorrent Sync doesn't have a web client.
@@ -8,7 +10,7 @@ This can allow one to switch to BitTorrent Sync from Dropbox, since a major disa
 It can be run using uwsgi and nginx, using the below nginx config (Make sure to replace {{path/to/storage}} and {{path/to/static}} with a path to where btsync is storing directories and a path to the static files directory respectivley.), but it can be run without them.
 
 
-```
+```py
 upstream btsyncWeb{
 	server 127.0.0.1:8000;
 }
